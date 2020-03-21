@@ -22,6 +22,7 @@ $(function(){
 
 
 	join_room.click(function(){
+		//make sure input is valid
 		socket.emit('join_room', {'username' : username.val(), 'room' : room.val()})
 	})
 
@@ -32,7 +33,14 @@ $(function(){
 	})
 	socket.on('joined_failed', (data) =>{
 		//oops
+		alert("sorry we coulnt join ya, double check your room number buddy")
 	})
+
+	socket.on('leave_room', (data) => {
+		alert("session has ended")
+		//owner left room, room is no longer valid, send them back to the homepage
+	})
+	
 	create_room.click(function(){
 		//make sure field not empty
 		//
@@ -48,7 +56,7 @@ $(function(){
 
 	raise_hand.click(function(){
 		handRaised = !handRaised;
-		socket.emit('hand_changed', { 'room' : myRoom, 'handState' : handRaised})
+		socket.emit('hand_changed', { 'handState' : handRaised})
 	})
 
 	socket.on('update_page', (data) =>{
