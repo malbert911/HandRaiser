@@ -1,0 +1,59 @@
+html, body{
+    height: 100%; 
+    overflow: hidden;
+}
+
+.StudentDesks{
+    display: grid;
+    gap: 50px;
+    
+
+
+
+}
+.Desk{
+    background-color: green;
+    border-radius: 25px;
+    width: 200px;
+    height: 100px;
+}
+#CreateJoin{
+height: 80%;
+display: flex;
+justify-content: center;
+
+align-items: center;
+flex-direction: column;
+color: honeydew;
+
+}
+#Name{
+    
+    display: flex;
+    flex-direction: column;
+    
+}
+#NameInput{
+    width: 100%;
+}
+#Create{
+    display: flex;
+    justify-content: center;
+    
+    align-items: center;
+    flex-direction: column;
+}
+#Join{
+    display: flex;
+justify-content: center;
+
+align-items: center;
+flex-direction: column;
+}
+#MainHeader{
+    color: honeydew;
+    padding: 5px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
