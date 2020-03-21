@@ -22,6 +22,7 @@ $(function(){
 
 
 	join_room.click(function(){
+		//TODO
 		//make sure input is valid
 		socket.emit('join_room', {'username' : username.val(), 'room' : room.val()})
 	})
@@ -42,8 +43,8 @@ $(function(){
 	})
 	
 	create_room.click(function(){
+		//TODO
 		//make sure field not empty
-		//
 		socket.emit('create_room', {'username' : username.val()});
 	})
 	socket.on('created', (data) =>{

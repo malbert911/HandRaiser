@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
         
         do{
             newRoom = Math.floor(Math.random() * (MINROOM*10));
-            console.log(newRoom);
+            //console.log(newRoom);
         }
         while(!(typeof rooms[newRoom/MINROOM] == 'undefined' && newRoom > MINROOM && newRoom < MAXROOM))
         //what if no more rooms available?
@@ -153,7 +153,8 @@ io.on('connection', (socket) => {
     socket.on('disconnect', function() {
         console.log('Got disconnected!');
 
-        if((socket.room !='default') && !(typeof rooms[socket.room/MINROOM] == 'undefined'))
+        if((socket.room !='default') && !(typeof rooms[socket.room/MINROOM] == 'undefined' || rooms[socket.room/MINROOM] == null)){
+            console.log(rooms[socket.room/MINROOM])
             if(rooms[socket.room/MINROOM].ownerId == socket.id){
                 io.in(socket.room).emit('leave_room')
                 rooms[socket.room/MINROOM] = null;
@@ -165,6 +166,8 @@ io.on('connection', (socket) => {
                 rooms[socket.room/MINROOM].removeMember(socket.id);
                 io.in(socket.room).emit('update_page', {'html' : rooms[socket.room/MINROOM].toString()})
             }
+        }
+        
 
 
      });
