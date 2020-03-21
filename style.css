@@ -1,15 +1,20 @@
 html, body{
+    /*
+    Having this commented allows the content to be scrollable on smaller screens
     height: 100%; 
-    overflow: hidden;
+    overflow: hidden; */
+}
+input{
+    /*white on black input color for dark mode*/
+    color: white;
 }
 
+h3{
+    text-align: center;
+}
 .StudentDesks{
     display: grid;
     gap: 50px;
-    
-
-
-
 }
 .Desk{
     background-color: green;
@@ -50,6 +55,7 @@ justify-content: center;
 align-items: center;
 flex-direction: column;
 }
+
 #MainHeader{
     color: honeydew;
     padding: 5px;
