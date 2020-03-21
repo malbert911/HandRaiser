@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" const="text/html;charset=UTF-8" />
+    <link href="http://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="style.css" >
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <title>Simple Chat App</title>
+  </head>
+
+  <body>
+    <header>
+      <h1>Hand Raiser</h1>
+    </header>
+
+    <section>
+      <div id="change_username">
+	
+	<button id="send_username" type="button">Change username</button>
+      </div>
+    </section>
+    <section>
+      <input id="username" type="text" />
+      <input id="room" type="number" min="10000" max="99999"/>
+      <button id="create_room" type="button">Create</button>
+      <button id="join_room" type="button">Join!</button>
+      <button id="raise_hand" type="button">Raise Hand</button>
+    </section>
+    <section>
+      <h3>Connected users</h3>
+      <section id="connected_users"></section>
+    </section>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="chat.js"></script>
+  </body>
+</html>
