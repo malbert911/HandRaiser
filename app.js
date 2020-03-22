@@ -4,12 +4,44 @@ let rooms = [];
 const MINROOM = 10000;
 const MAXROOM = 99999
 
+class EmotePoll{
+    constructor(memberCount){
+        this.memberCount = memberCount;
+        this.smileCount = 0;
+        this.mehCount = 0;
+        this.frownCount = 0;
+        this.responsesCount = 0;
+        this.ongoing = true;
+    }
+    addSmile(){
+        if(this.responsesCount < this.memberCount){
+            this.smileCount++;
+            this.responsesCount++;
+        }
+    }
+    addMeh(){
+        if(this.responsesCount < this.memberCount){
+            this.mehCount++;
+            this.responsesCount++;
+        }
+    }
+    addFrown(){
+        if(this.responsesCount < this.memberCount){
+            this.frownCount++;
+            this.responsesCount++;
+        }
+    }
+
+
+}
+
 class Room{
     constructor(roomId, ownerName, ownerId){
         this.id = roomId;
         this.ownerName = ownerName;
         this.ownerId = ownerId;
         this.members = [];
+        this.emote_poll;
     }
 
     setMemberHand(memberId, handState){
@@ -26,8 +58,6 @@ class Room{
         for(let i=0; i < this.members.length; i++){
             if(this.members[i].id == id){
                 this.members.splice(i);
-                //this.members[i].handRaised = handState;
-                //DELETE THIS
                 return true;
             }
         }
@@ -144,10 +174,46 @@ io.on('connection', (socket) => {
         if(!(rooms[myRoom/MINROOM] == null)){
             if(rooms[myRoom/MINROOM].setMemberHand(socket.id, data.handState))
                 io.in(myRoom).emit('update_page', {'html' : rooms[myRoom/MINROOM].toString()})
-
-            
         }
 
+    })
+
+    socket.on('start_poll', (data) => {
+        //make sure request came from room owner
+        if(rooms[socket.room/MINROOM].ownerId == socket.id){
+            switch (data.poll_type){
+                case 'emote_poll':
+                    //setup new emote poll
+                    rooms[socket.room/MINROOM].emote_poll = new EmotePoll(rooms[socket.room/MINROOM].members.length);
+                    //send to all except sender
+                    socket.to(socket.room).emit('ask_poll',"emote_poll");
+                    break;
+
+                default: return;
+            }
+        }
+    })
+
+    socket.on('poll_response', (data) =>{
+        console.log("client responded")
+        switch(data.poll_type){
+            case 'emote_poll':
+                if(rooms[socket.room/MINROOM].emote_poll.ongoing)
+                    switch (data.respons){
+                        case 'smile':
+                            rooms[socket.room/MINROOM].emote_poll.addSmile();
+                            break;
+                        case 'meh':
+                            rooms[socket.room/MINROOM].emote_poll.addMeh();
+                            break;
+                        case 'frown':
+                            rooms[socket.room/MINROOM].emote_poll.addFrown();
+                            break;
+                        default: return;                                        
+                }
+                break;
+            default: return;
+        }
     })
 
     socket.on('disconnect', function() {
