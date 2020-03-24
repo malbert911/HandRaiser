@@ -199,7 +199,7 @@ io.on('connection', (socket) => {
         switch(data.poll_type){
             case 'emote_poll':
                 if(rooms[socket.room/MINROOM].emote_poll.ongoing)
-                    switch (data.respons){
+                    switch (data.response){
                         case 'smile':
                             rooms[socket.room/MINROOM].emote_poll.addSmile();
                             break;
@@ -215,6 +215,24 @@ io.on('connection', (socket) => {
             default: return;
         }
     })
+    socket.on('get_poll_results', (data) =>{
+        console.log("poll times up")
+        switch(data.poll_type){
+            case 'emote_poll':
+                if(rooms[socket.room/MINROOM].emote_poll.ongoing){
+                    rooms[socket.room/MINROOM].emote_poll.ongoing = false;
+                    console.log("sending poll results");
+                    io.in(socket.room).emit('poll_results',{ 'poll_type' : 'emote_poll', 'member_count': rooms[socket.room/MINROOM].emote_poll.memberCount , 'response_count' : rooms[socket.room/MINROOM].emote_poll.responsesCount, 'smile_count':rooms[socket.room/MINROOM].emote_poll.smileCount, 'meh_count': rooms[socket.room/MINROOM].emote_poll.mehCount, 'frown_count' : rooms[socket.room/MINROOM].emote_poll.frownCount });
+                    rooms[socket.room/MINROOM].emote_poll = null;
+                }
+            break;
+
+            default: return;
+        }
+    })
+
+    
+
 
     socket.on('disconnect', function() {
         console.log('Got disconnected!');

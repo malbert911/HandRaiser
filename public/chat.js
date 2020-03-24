@@ -15,8 +15,15 @@ $(function(){
 	var feedback = $("#feedback")
 	var connected_users = $("#connected_users")
 	var raise_hand = $("#raise_hand")
+
 	var poll_prompt = $("#poll_prompt")
+	var poll_results = $("#poll_results")
+
 	var emote_poll = $("#emote_poll")
+	var emote_poll_prompts_smile = $("#emote_poll_prompts_smile")
+	var emote_poll_prompts_meh = $("#emote_poll_prompts_meh")
+	var emote_poll_prompts_frown = $("#emote_poll_prompts_frown")
+
 	var oneten_poll = $("#oneten_poll")
 	var boolean_poll = $("#boolean_poll")
 	var yesno_poll = $("#yesno_poll")
@@ -88,7 +95,11 @@ $(function(){
 	//------------OWNER----------------------------
 
 	emote_poll.click(function(){
-		socket.emit('start_poll', {'poll_type' : 'emote_poll'})
+		socket.emit('start_poll', {'poll_type' : 'emote_poll'});
+		setTimeout(function () {
+			socket.emit('get_poll_results', {'poll_type' : 'emote_poll'});
+		}, 5000);
+		
 	})
 
 	//=============================================
@@ -104,17 +115,37 @@ $(function(){
         switch (data){
 			case 'emote_poll':
 				//setup new emote poll
-				poll_prompt.html = '';
-				poll_prompt.append(`<button onclick="poll_prompt.html=''; socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'smile'});">smile</button>`)
-				poll_prompt.append(`<button onclick="poll_prompt.html=''; socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'meh'});">meh</button>`)
-				poll_prompt.append(`<button onclick="poll_prompt.html=''; socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'frown'});">frown</button>`)
+				$("#emote_poll_prompts").show();
 				break;
 
 			default: return;
+		}          
+	})
+	socket.on('poll_results', (data) => {
+		console.log("got back poll results");
+		switch (data.poll_type){
+			case 'emote_poll':
+			console.log("was emote poll");
+			$("#emote_poll_prompts").hide();
+			poll_results.html(`<p>Participated: ${data.response_count} / ${data.member_count} Smiles: ${data.smile_count} Meh: ${data.meh_count} Frowns: ${data.frown_count}</p>`);
+			console.log("showed results");
+			break;
+			default: return;
 		}
+	})
 
-            
-    })
+	//--------------POLL RESPONSES-------------------
+	//--------------EMOTE----------------------------
+	emote_poll_prompts_smile.click(function(){
+		socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'smile'});
+	})
+	emote_poll_prompts_meh.click(function(){
+		socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'meh'});
+	})
+	emote_poll_prompts_frown.click(function(){
+		socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'frown'});
+	})
+	
 
 });
 
