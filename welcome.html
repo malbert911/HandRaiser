@@ -23,8 +23,8 @@
           <div class="row">
         <div class="input-field col s6" id="NameInput">
           <i class="material-icons prefix">account_circle</i>
-          <input id="input_username" type="text">
-          <label for="input_username">Name</label>
+          <input id="username" type="text">
+          <label for="username">Name</label>
     </div>
     </form>
     </div>
@@ -35,15 +35,16 @@
               
               <input id="input_room_id" type="number">
               <label for="input_room_id">Room ID</label>
-              <a class="waves-effect waves-light btn-large #212121 grey darken-4">Join</a>
+              <a class="waves-effect waves-light btn-large #212121 grey darken-4" id="join_room" href="classroom.html">Join</a>
             </div>
         </div>
         <div id="Create" class="col s12 l6">
             <h3>Create a Room</h3>
-            <a class="waves-effect waves-light btn-large #212121 grey darken-4">Create</a>
+            <a class="waves-effect waves-light btn-large #212121 grey darken-4" id="create_room" href="classroom.html">Create</a>
         </div>
     </div>
  <!-- Compiled and minified JavaScript -->
- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>          
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+ <script src="public/chat.js"></script>          
 </body>
 </html>
