@@ -50,10 +50,6 @@ $(function(){
 		myUsername = data.username;
 		//go to room page
 	})
-	socket.on('joined_failed', (data) =>{
-		//oops
-		alert("sorry we coulnt join ya, double check your room number buddy")
-	})
 
 	//=============================================
 	//			LEAVE A ROOM
@@ -145,7 +141,13 @@ $(function(){
 	emote_poll_prompts_frown.click(function(){
 		socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'frown'});
 	})
-	
+
+	//=============================================
+	//			ERROR
+	//=============================================
+	socket.on('client_error', (data) => {
+        alert(data);         
+	})	
 
 });
 
