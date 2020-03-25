@@ -1,7 +1,7 @@
 {
-  "name": "simplechatapp",
+  "name": "handraiser",
   "version": "1.0.0",
-  "description": "Simple chat app built with node.js and socket.io",
+  "description": "Track raised hands and create quick polls",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ngrt/simpleChatApp.git"
+    "url": "git+https://github.com/malbert911/HandRaiser.git"
   },
   "author": "Noufel Gouirhate",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ngrt/simpleChatApp/issues"
+    "url": "https://github.com/malbert911/HandRaiser/issues"
   },
-  "homepage": "https://github.com/ngrt/simpleChatApp#readme",
+  "homepage": "https://github.com/malbert911/HandRaiser#readme",
   "dependencies": {
     "ejs": "^2.5.7",
     "express": "^4.16.2",

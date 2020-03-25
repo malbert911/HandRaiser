@@ -1,7 +1,7 @@
 M.AutoInit();
 $(function(){
    	//make connection
-	var socket = io.connect('http://localhost:3000')
+	let socket = io.connect('http://localhost:3000')
 
 	//buttons and inputs
 	let username = $("#input_username")
