@@ -65,15 +65,15 @@ class Room{
     }
 
     toString(){
-        let tmp = `<div class="owner">${this.ownerName}</div>`;
-        tmp += `<div class="members">`;
+        let tmp = `<div class="Owner">${this.ownerName}</div>`;
+        tmp += `<div class="StudentDesks">`;
         for(let i=0; i < this.members.length; i++){
             console.log(this.members[i]);
             console.log(this.members);
-            tmp+= `<div class="member">${this.members[i].username}`;
             if(this.members[i].handRaised)
-                tmp+="RAISED"
-            tmp+= `</div>`;
+                tmp+= `<div class="RaisedDesk">✋ ${this.members[i].username}</div>`;
+            else
+                tmp+=`<div class="Desk">${this.members[i].username}</div>`
         }
         tmp += `</div>`;
         return tmp;

@@ -1,50 +1,90 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" const="text/html;charset=UTF-8" />
-    <link href="http://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" type="text/css" href="style.css" >
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-    <title>Simple Chat App</title>
-  </head>
 
-  <body>
+<head>
+  <meta http-equiv="Content-Type" const="text/html;charset=UTF-8" />
+  <link href="http://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet" type="text/css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!--Let browser know website is optimized for mobile-->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+  <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body class="#424242 grey darken-3">
+  <h1 class="#212121 grey darken-4" id="MainHeader">Hand Raiser ✋</h1>
+
+  <!-------------------WELCOME-------------------->
+  <div id="CreateJoin">
+    <div class="row" id="Name">
+      <h3>Enter Your Name</h3>
+
+      <div class="row">
+        <div class="input-field col s6" id="NameInput">
+          <!--<i class="material-icons prefix">account_circle</i>-->
+          <input id="input_username" type="text">
+          <label for="username">Name</label>
+        </div>
+        </form>
+      </div>
+      <div class="row">
+        <div class="col s12 l6">
+          <h3>Join a Room</h3>
+          <div class="input-field" id="Join">
+
+            <input id="input_room_id" type="number">
+            <label for="input_room_id">Room ID</label>
+            <a class="waves-effect waves-light btn-large #212121 grey darken-4" id="join_room">Join</a>
+          </div>
+        </div>
+        <div id="Create" class="col s12 l6">
+          <h3>Create a Room</h3>
+          <a class="waves-effect waves-light btn-large #212121 grey darken-4" id="create_room">Create</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-------------------END-WELCOME-------------------->
+  <div id="RoomView" style="display: none;">
     <header>
-      <h1>Hand Raiser</h1>
+      <!--<h3 class="#212121 grey darken-4" id="MainHeader">Name: </h3>-->
+      <h4 class="#212121 grey darken-2" id="room_id"> Room ID: </h4>
     </header>
+    <!--Classroom Div-->
+    <section id="poll_results" style="display: none;">
+    <div id="poll_results_content" class="ct-chart ct-double-octave"></div>
+    <a class="waves-effect waves-light btn-small #212121 grey darken-4 right" onclick='$("#poll_results").hide();''><i class="material-icons right">clear</i>Dismiss</a>
+    </section>
+    <div id="MainView">
 
-    <section>
-      <input id="username" type="text" />
-      <input id="room" type="number" min="10000" max="99999"/>
-      <button id="create_room" type="button">Create</button>
-      <button id="join_room" type="button">Join!</button>
-      <button id="raise_hand" type="button">Raise Hand</button>
-    </section>
-    <section>
-      <button id="emote_poll" type="button">emote_poll</button>
-      <button id="oneten_poll" type="button">oneten_poll</button>
-      <button id="boolean_poll" type="button">boolean_poll</button>
-      <button id="yesno_poll" type="button">yesno_poll</button>
-    </section>
-    <section>
-      <h3>
-        Polls
-      </h3>
+      <!--
+      <div class="StudentDesks">
+        <div class="Desk">
+          Username
+        </div>
+        <div class="Desk"></div>
+      </div>-->
+    </div>
+    <footer id="MemberFooter"  style="display: none;">
       <section id="poll_prompt">
         <section id="emote_poll_prompts" style="display: none;">
-          <button id="emote_poll_prompts_smile">smile</button>
-          <button id="emote_poll_prompts_meh">meh</button>
-          <button id="emote_poll_prompts_frown">frown</button>
+          <button class="waves-effect waves-light btn-large #212121 grey darken-4 EmoteVote" id="emote_poll_prompts_smile">😄</button>
+          <button class="waves-effect waves-light btn-large #212121 grey darken-4 EmoteVote" id="emote_poll_prompts_meh">🙂</button>
+          <button class="waves-effect waves-light btn-large #212121 grey darken-4 EmoteVote" id="emote_poll_prompts_frown">😕</button>
         </section>
       </section>
-      
-      <section id="poll_results"></section>
-    </section>
-    <section>
-      <h3>Connected users</h3>
-      <section id="connected_users"></section>
-    </section>
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="chat.js"></script>
-  </body>
+      <button class="waves-effect waves-light btn-large #212121 grey darken-4" id="raise_hand">Raise Hand</button>
+    </footer>
+    <footer id="OwnerFooter"  style="display: none;">
+      <button class="waves-effect waves-light btn-large #212121 grey darken-4 OwnerFooterItem" id="emote_poll">Start Emote Poll</button>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="chat.js"></script>
+</body>
 </html>

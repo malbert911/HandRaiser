@@ -1,23 +1,20 @@
-var users;
+M.AutoInit();
 $(function(){
    	//make connection
 	var socket = io.connect('http://localhost:3000')
 
 	//buttons and inputs
-	var message = $("#message")
-	var username = $("#username")
-	var room = $("#room")
-	var join_room = $("#join_room")
-	var create_room = $("#create_room")
-	var send_message = $("#send_message")
-	var send_username = $("#send_username")
-	var chatroom = $("#chatroom")
-	var feedback = $("#feedback")
-	var connected_users = $("#connected_users")
+	let username = $("#input_username")
+	let room = $("#input_room_id")
+	let join_room = $("#join_room")
+	let create_room = $("#create_room")
+
+	var connected_users = $("#MainView")
 	var raise_hand = $("#raise_hand")
 
-	var poll_prompt = $("#poll_prompt")
-	var poll_results = $("#poll_results")
+	let poll_prompt = $("#poll_prompt")
+	let poll_results = $("#poll_results")
+	let poll_results_content = $("#poll_results_content")
 
 	var emote_poll = $("#emote_poll")
 	var emote_poll_prompts_smile = $("#emote_poll_prompts_smile")
@@ -48,6 +45,12 @@ $(function(){
 	socket.on('joined', (data) =>{
 		myRoom = data.room;
 		myUsername = data.username;
+		$("#room_id").append(myRoom);
+		$("#CreateJoin").hide();
+		$("#RoomView").show();
+		$("#MemberFooter").show();
+		
+		M.toast({html: `Joined room ${data.room}`})
 		//go to room page
 	})
 
@@ -57,6 +60,7 @@ $(function(){
 
 	socket.on('leave_room', (data) => {
 		alert("session has ended")
+		window.location.reload(true); 
 		//owner left room, room is no longer valid, send them back to the homepage
 	})
 	
@@ -73,7 +77,11 @@ $(function(){
 		myRoom = data.room;
 		myUsername = data.username;
 		alert(myRoom);
-		//go to owner layout
+		$("#room_id").append(myRoom);
+		$("#CreateJoin").hide();
+		$("#RoomView").show();
+		$("#OwnerFooter").show();
+		M.toast({html: `Created room ${data.room}`})
 		//prompt to share room id?
 	})
 
@@ -92,6 +100,7 @@ $(function(){
 
 	emote_poll.click(function(){
 		socket.emit('start_poll', {'poll_type' : 'emote_poll'});
+		M.toast({html: `Started Emote Poll, poll will be over in 5 seconds`});
 		setTimeout(function () {
 			socket.emit('get_poll_results', {'poll_type' : 'emote_poll'});
 		}, 5000);
@@ -111,6 +120,8 @@ $(function(){
         switch (data){
 			case 'emote_poll':
 				//setup new emote poll
+				//M.toast({html: `Emote Poll Started, please vote.`});
+
 				$("#emote_poll_prompts").show();
 				break;
 
@@ -123,7 +134,19 @@ $(function(){
 			case 'emote_poll':
 			console.log("was emote poll");
 			$("#emote_poll_prompts").hide();
-			poll_results.html(`<p>Participated: ${data.response_count} / ${data.member_count} Smiles: ${data.smile_count} Meh: ${data.meh_count} Frowns: ${data.frown_count}</p>`);
+			poll_results.show();
+			//=========CHARTIST.JS=========
+			  new Chartist.Bar('.ct-chart', {
+				labels: ['😄', '🙂', '😕'],
+				series: [data.smile_count, data.meh_count, data.frown_count]
+			  }, {
+				distributeSeries: true
+			  });
+			  
+			
+			
+
+			//poll_results_content.html(`<p>Participated: ${data.response_count} / ${data.member_count} Smiles: ${data.smile_count} Meh: ${data.meh_count} Frowns: ${data.frown_count}</p>`);
 			console.log("showed results");
 			break;
 			default: return;
@@ -134,21 +157,23 @@ $(function(){
 	//--------------EMOTE----------------------------
 	emote_poll_prompts_smile.click(function(){
 		socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'smile'});
+		$("#emote_poll_prompts").hide();
 	})
 	emote_poll_prompts_meh.click(function(){
 		socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'meh'});
+		$("#emote_poll_prompts").hide();
 	})
 	emote_poll_prompts_frown.click(function(){
 		socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'frown'});
+		$("#emote_poll_prompts").hide();
 	})
 
 	//=============================================
 	//			ERROR
 	//=============================================
 	socket.on('client_error', (data) => {
-        alert(data);         
+		M.toast({html: `Error: ${data}`});
+     
 	})	
 
 });
-
-
