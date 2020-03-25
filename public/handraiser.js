@@ -1,6 +1,6 @@
 M.AutoInit();
-$(function(){
-   	//make connection
+$(function () {
+	//make connection
 	let socket = io.connect('http://localhost:3000')
 
 	//buttons and inputs
@@ -22,15 +22,17 @@ $(function(){
 	let emote_poll_prompts_frown = $("#emote_poll_prompts_frown")
 
 	let question_poll = $("#question_poll")
-	let questione_poll_prompts_yes = $("#question_poll_prompts_smile")
+	let question_poll_prompts_yes = $("#question_poll_prompts_smile")
 	let question_poll_prompts_maybe = $("#question_poll_prompts_maybe")
 	let question_poll_prompts_no = $("#question_poll_prompts_no")
 
-	let oneten_poll = $("#oneten_poll")
-	let boolean_poll = $("#boolean_poll")
-	let yesno_poll = $("#yesno_poll")
-	
-	let handRaised  = false;
+	let multiplechoice_poll = $("#multiplechoice_poll")
+	let multiplechoice_poll_prompts_a = $("#multiplechoice_poll_prompts_a")
+	let multiplechoice_poll_prompts_b = $("#multiplechoice_poll_prompts_b")
+	let multiplechoice_poll_prompts_c = $("#multiplechoice_poll_prompts_c")
+	let multiplechoice_poll_prompts_d = $("#multiplechoice_poll_prompts_d")
+
+	let handRaised = false;
 	let myRoom;
 	let myUsername;
 
@@ -41,22 +43,22 @@ $(function(){
 	//=============================================
 
 
-	join_room.click(function(){
-		if( username.val() )
-			socket.emit('join_room', {'username' : username.val(), 'room' : room.val()})
+	join_room.click(function () {
+		if (username.val())
+			socket.emit('join_room', { 'username': username.val(), 'room': room.val() })
 		else
-			M.toast({html: 'Please enter a name'})
+			M.toast({ html: 'Please enter a name' })
 	})
 
-	socket.on('joined', (data) =>{
+	socket.on('joined', (data) => {
 		myRoom = data.room;
 		myUsername = data.username;
 		$("#room_id").append(myRoom);
 		$("#CreateJoin").hide();
 		$("#RoomView").show();
 		$("#MemberFooter").show();
-		
-		M.toast({html: `Joined room ${data.room}`})
+
+		M.toast({ html: `Joined room ${data.room}` })
 	})
 
 	//=============================================
@@ -65,29 +67,29 @@ $(function(){
 
 	socket.on('leave_room', (data) => {
 		alert("Session has ended. The room owner has left the room.")
-		window.location.reload(true); 
+		window.location.reload(true);
 		//owner left room, room is no longer valid, send them back to the homepage
 	})
-	
+
 
 	//=============================================
 	//			CREATE A ROOM
 	//=============================================
-	create_room.click(function(){
-		if( username.val() )
-			socket.emit('create_room', {'username' : username.val()});
+	create_room.click(function () {
+		if (username.val())
+			socket.emit('create_room', { 'username': username.val() });
 		else
-			M.toast({html: 'Please enter a name'})
-		
+			M.toast({ html: 'Please enter a name' })
+
 	})
-	socket.on('created', (data) =>{
+	socket.on('created', (data) => {
 		myRoom = data.room;
 		myUsername = data.username;
 		$("#room_id").append(myRoom);
 		$("#CreateJoin").hide();
 		$("#RoomView").show();
 		$("#OwnerFooter").show();
-		M.toast({html: `Created room ${data.room}`})
+		M.toast({ html: `Created room ${data.room}` })
 		//prompt to share room id?
 	})
 
@@ -97,80 +99,106 @@ $(function(){
 
 	//-------------MEMBER--------------------------
 
-	raise_hand.click(function(){
+	raise_hand.click(function () {
 		handRaised = !handRaised;
-		socket.emit('hand_changed', { 'handState' : handRaised})
+		socket.emit('hand_changed', { 'handState': handRaised })
 	})
 
 	//------------OWNER----------------------------
 
-	emote_poll.click(function(){
+	emote_poll.click(function () {
 		$("#OwnerFooter").hide();
-		socket.emit('start_poll', {'poll_type' : 'emote_poll'});
-		M.toast({html: `Started emote poll, poll will be over in 5 seconds`});
+		socket.emit('start_poll', { 'poll_type': 'emote_poll' });
+		M.toast({ html: `Started emote poll, poll will be over in 5 seconds` });
 		setTimeout(function () {
-			socket.emit('get_poll_results', {'poll_type' : 'emote_poll'});
+			socket.emit('get_poll_results', { 'poll_type': 'emote_poll' });
 			$("#OwnerFooter").show();
 		}, 5000);
-		
+
 	})
-	question_poll.click(function(){
+	question_poll.click(function () {
 		$("#OwnerFooter").hide();
-		socket.emit('start_poll', {'poll_type' : 'question_poll'});
-		M.toast({html: `Started question poll, poll will be over in 5 seconds`});
+		socket.emit('start_poll', { 'poll_type': 'question_poll' });
+		M.toast({ html: `Started question poll, poll will be over in 5 seconds` });
 		setTimeout(function () {
-			socket.emit('get_poll_results', {'poll_type' : 'question_poll'});
+			socket.emit('get_poll_results', { 'poll_type': 'question_poll' });
 			$("#OwnerFooter").show();
 		}, 5000);
-		
+
+	})
+	multiplechoice_poll.click(function () {
+		$("#OwnerFooter").hide();
+		socket.emit('start_poll', { 'poll_type': 'multiplechoice_poll' });
+		M.toast({ html: `Started multiple choice poll, poll will be over in 5 seconds` });
+		setTimeout(function () {
+			socket.emit('get_poll_results', { 'poll_type': 'multiplechoice_poll' });
+			$("#OwnerFooter").show();
+		}, 5000);
+
 	})
 
 	//=============================================
 	//			UPDATE PAGE
 	//=============================================
 
-	socket.on('update_page', (data) =>{
+	socket.on('update_page', (data) => {
 		connected_users.html(data.html);
 	})
 
 	//---------POLLS--------------------------------
 	socket.on('ask_poll', (data) => {
-        switch (data){
+		switch (data) {
 			case 'emote_poll':
 				$("#emote_poll_prompts").show();
 				break;
 			case 'question_poll':
 				$("#question_poll_prompts").show();
 				break;
+			case 'multiplechoice_poll':
+				$("#multiplechoice_poll_prompts").show();
+				break;
 			default: return;
-		}          
+		}
 	})
 	socket.on('poll_results', (data) => {
-		switch (data.poll_type){
+		switch (data.poll_type) {
 			case 'emote_poll':
-			$("#emote_poll_prompts").hide();
-			poll_results.show();
+				$("#emote_poll_prompts").hide();
+				poll_results.show();
 
-			//=========CHARTIST.JS=========
-			new Chartist.Bar('.ct-chart', {
-				labels: ['😄', '🙂', '😕'],
-				series: [data.smile_count, data.meh_count, data.frown_count]
-			}, {distributeSeries: true });
-			  
-			$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
-			break;
+				//=========CHARTIST.JS=========
+				new Chartist.Bar('.ct-chart', {
+					labels: ['😄', '🙂', '😕'],
+					series: [data.smile_count, data.meh_count, data.frown_count]
+				}, { distributeSeries: true });
+
+				$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
+				break;
 			case 'question_poll':
 				$("#question_poll_prompts").hide();
 				poll_results.show();
-	
+
 				//=========CHARTIST.JS=========
 				new Chartist.Bar('.ct-chart', {
 					labels: ['Yes', 'Maybe/Not Sure', 'No'],
 					series: [data.yes_count, data.maybe_count, data.no_count]
-				}, {distributeSeries: true });
-				  
+				}, { distributeSeries: true });
+
 				$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
-	
+
+				break;
+			case 'multiplechoice_poll':
+				$("#multiplechoice_poll_prompts").hide();
+				poll_results.show();
+
+				//=========CHARTIST.JS=========
+				new Chartist.Bar('.ct-chart', {
+					labels: ['A', 'B', 'C', 'D'],
+					series: [data.a_count, data.b_count, data.c_count, data.d_count]
+				}, { distributeSeries: true });
+
+				$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
+
 				break;
 			default: return;
 		}
@@ -178,30 +206,47 @@ $(function(){
 
 	//--------------POLL RESPONSES-------------------
 	//--------------EMOTE----------------------------
-	emote_poll_prompts_smile.click(function(){
-		socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'smile'});
+	emote_poll_prompts_smile.click(function () {
+		socket.emit('poll_response', { 'poll_type': 'emote_poll', 'response': 'smile' });
 		$("#emote_poll_prompts").hide();
 	})
-	emote_poll_prompts_meh.click(function(){
-		socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'meh'});
+	emote_poll_prompts_meh.click(function () {
+		socket.emit('poll_response', { 'poll_type': 'emote_poll', 'response': 'meh' });
 		$("#emote_poll_prompts").hide();
 	})
-	emote_poll_prompts_frown.click(function(){
-		socket.emit('poll_response', { 'poll_type' : 'emote_poll', 'response' : 'frown'});
+	emote_poll_prompts_frown.click(function () {
+		socket.emit('poll_response', { 'poll_type': 'emote_poll', 'response': 'frown' });
 		$("#emote_poll_prompts").hide();
 	})
 	//--------------QUESTION----------------------------
-	question_poll_prompts_yes.click(function(){
-		socket.emit('poll_response', { 'poll_type' : 'question_poll', 'response' : 'yes'});
+	question_poll_prompts_yes.click(function () {
+		socket.emit('poll_response', { 'poll_type': 'question_poll', 'response': 'yes' });
 		$("#question_poll_prompts").hide();
 	})
-	question_poll_prompts_no.click(function(){
-		socket.emit('poll_response', { 'poll_type' : 'question_poll', 'response' : 'no'});
+	question_poll_prompts_no.click(function () {
+		socket.emit('poll_response', { 'poll_type': 'question_poll', 'response': 'no' });
 		$("#question_poll_prompts").hide();
 	})
-	question_poll_prompts_maybe.click(function(){
-		socket.emit('poll_response', { 'poll_type' : 'question_poll', 'response' : 'maybe'});
+	question_poll_prompts_maybe.click(function () {
+		socket.emit('poll_response', { 'poll_type': 'question_poll', 'response': 'maybe' });
 		$("#question_poll_prompts").hide();
+	})
+	//--------------MULTIPLE CHOICE--------------------
+	multiplechoice_poll_prompts_a.click(function () {
+		socket.emit('poll_response', { 'poll_type': 'multiplechoice_poll', 'response': 'a' });
+		$("#multiplechoice_poll_prompts").hide();
+	})
+	multiplechoice_poll_prompts_b.click(function () {
+		socket.emit('poll_response', { 'poll_type': 'multiplechoice_poll', 'response': 'b' });
+		$("#multiplechoice_poll_prompts").hide();
+	})
+	multiplechoice_poll_prompts_c.click(function () {
+		socket.emit('poll_response', { 'poll_type': 'multiplechoice_poll', 'response': 'c' });
+		$("#multiplechoice_poll_prompts").hide();
+	})
+	multiplechoice_poll_prompts_d.click(function () {
+		socket.emit('poll_response', { 'poll_type': 'multiplechoice_poll', 'response': 'd' });
+		$("#multiplechoice_poll_prompts").hide();
 	})
 
 
@@ -209,8 +254,8 @@ $(function(){
 	//			ERROR
 	//=============================================
 	socket.on('client_error', (data) => {
-		M.toast({html: `Error: ${data}`});
-     
-	})	
+		M.toast({ html: `Error: ${data}` });
+
+	})
 
 });

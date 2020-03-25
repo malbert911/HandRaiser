@@ -137,6 +137,10 @@ flex-direction: column;
     width: 33%;
     font-size:x-large;
 }
+.MultipleChoiceVote{
+    width: 23%;
+    font-size:x-large;
+}
 #raise_hand{
     width: 100%;
     color: greenyellow;

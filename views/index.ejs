@@ -16,7 +16,9 @@
 </head>
 
 <body class="#424242 grey darken-3">
-  <a href="/" ><h1 class="#212121 grey darken-4" id="MainHeader">Hand Raiser ✋</h1></a>
+  <a href="/">
+    <h1 class="#212121 grey darken-4" id="MainHeader">Hand Raiser ✋</h1>
+  </a>
 
   <!-------------------WELCOME-------------------->
   <div id="CreateJoin">
@@ -51,29 +53,35 @@
         </div>
       </div>
       <div class="HomepageFooter" style="width: 100%;">
-          <a class="modal-trigger" href="#about_modal">About</a>
-          <div id="about_modal" class="modal">
-            <div class="modal-content black-text">
-              <h4>About Hand Raiser</h4>
-              <p>While our classes were temporarily suspended due to COVID-19, Logan McGovern and myself, Matthew Albert, started this project. The objective is to provide an easy way to teachers for get feedback from students in an online class.<br/>
-                Hand Raiser allows individuals to create rooms, have other join it, create quick polls and track whose hand is raised!<br/>
-                Feel free to contribute to this open source project on GitHub.<br/>
-                Donations are greatly appreciated to cover server costs and keep this website free.<br/>
-                Contact me at <a href="mailto:m@malbert.xyz">m@malbert.xyz</a> or <a href="mailto:matthew.albert911@gmail.com">matthew.albert911@gmail.com</a>
-                </p>
-            </div>
-            <div class="modal-footer">
-              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
-            </div>
+        <a class="modal-trigger" href="#about_modal">About</a>
+        <div id="about_modal" class="modal">
+          <div class="modal-content black-text">
+            <h4>About Hand Raiser</h4>
+            <p>While our classes were temporarily suspended due to COVID-19, Logan McGovern and myself, Matthew Albert,
+              started this project. The objective is to provide an easy way to teachers for get feedback from students
+              in an online class.<br />
+              Hand Raiser allows individuals to create rooms, have other join it, create quick polls and track whose
+              hand is raised!<br />
+              Feel free to contribute to this open source project on GitHub.<br />
+              Donations are greatly appreciated to cover server costs and keep this website free.<br />
+              Contact me at <a href="mailto:m@malbert.xyz">m@malbert.xyz</a> or <a
+                href="mailto:matthew.albert911@gmail.com">matthew.albert911@gmail.com</a>
+            </p>
           </div>
-
-
-          <a  href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=matthew.albert911%40gmail.com&item_name=Donate+to+Hand+Raiser+project&currency_code=CAD&source=url">Help cover server costs</a>
-
-          <a href="https://github.com/malbert911/HandRaiser">Check us out on GitHub</a>
+          <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+          </div>
         </div>
+
+
+        <a
+          href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=matthew.albert911%40gmail.com&item_name=Donate+to+Hand+Raiser+project&currency_code=CAD&source=url">Help
+          cover server costs</a>
+
+        <a href="https://github.com/malbert911/HandRaiser">Check us out on GitHub</a>
       </div>
     </div>
+  </div>
   <!-------------------END-WELCOME-------------------->
   <div id="RoomView" style="display: none;">
     <header>
@@ -108,20 +116,40 @@
           <button class="waves-effect waves-light btn-large #212121 grey darken-4 QuestionVote"
             id="question_poll_prompts_no">No</button>
         </section>
+        <section id="multiplechoice_poll_prompts" style="display: none;">
+          <button class="waves-effect waves-light btn-large #212121 grey darken-4 MultipleChoiceVote"
+            id="multiplechoice_poll_prompts_a">A</button>
+          <button class="waves-effect waves-light btn-large #212121 grey darken-4 MultipleChoiceVote"
+            id="multiplechoice_poll_prompts_b">B</button>
+          <button class="waves-effect waves-light btn-large #212121 grey darken-4 MultipleChoiceVote"
+            id="multiplechoice_poll_prompts_c">C</button>
+          <button class="waves-effect waves-light btn-large #212121 grey darken-4 MultipleChoiceVote"
+            id="multiplechoice_poll_prompts_d">D</button>
+        </section>
       </section>
       <button class="waves-effect waves-light btn-large #212121 grey darken-4" id="raise_hand">Raise Hand</button>
     </footer>
     <footer id="OwnerFooter" style="display: none;">
       <!-- Modal Trigger -->
-      <a class="waves-effect waves-light btn modal-trigger #212121 grey darken-4 OwnerFooterItem" href="#choose_poll">Start A Poll</a>
+      <a class="waves-effect waves-light btn modal-trigger #212121 grey darken-4 OwnerFooterItem"
+        href="#choose_poll">Start A Poll</a>
 
       <!-- Modal Structure -->
       <div id="choose_poll" class="modal bottom-sheet">
         <div class="modal-content">
           <ul class="collection with-header">
-            <li class="collection-header"><h4>Poll Types</h4></li>
-            <li class="modal-close collection-item hoverable" id="emote_poll"><div>Emote Poll<a class="secondary-content grey-text">😄, 🙂, 😕</a></div></li>
-            <li class="modal-close collection-item hoverable" id="question_poll"><div>Question Poll<a class="secondary-content grey-text">Yes, Maybe/Not Sure, No</a></div></li>
+            <li class="collection-header">
+              <h4>Poll Types</h4>
+            </li>
+            <li class="modal-close collection-item hoverable" id="emote_poll">
+              <div>Emote Poll<a class="secondary-content grey-text">😄, 🙂, 😕</a></div>
+            </li>
+            <li class="modal-close collection-item hoverable" id="question_poll">
+              <div>Question Poll<a class="secondary-content grey-text">Yes, Maybe/Not Sure, No</a></div>
+            </li>
+            <li class="modal-close collection-item hoverable" id="multiplechoice_poll">
+              <div>Multiple Choice Poll<a class="secondary-content grey-text">A, B, C, D</a></div>
+            </li>
           </ul>
         </div>
         <div class="modal-footer">
