@@ -67,14 +67,6 @@
 
     </section>
     <div id="MainView">
-
-      <!--
-      <div class="StudentDesks">
-        <div class="Desk">
-          Username
-        </div>
-        <div class="Desk"></div>
-      </div>-->
     </div>
     <footer id="MemberFooter" style="display: none;">
       <section id="poll_prompt">
@@ -85,6 +77,14 @@
             id="emote_poll_prompts_meh">🙂</button>
           <button class="waves-effect waves-light btn-large #212121 grey darken-4 EmoteVote"
             id="emote_poll_prompts_frown">😕</button>
+        </section>
+        <section id="question_poll_prompts" style="display: none;">
+          <button class="waves-effect waves-light btn-large #212121 grey darken-4 QuestionVote"
+            id="question_poll_prompts_yes">Yes</button>
+          <button class="waves-effect waves-light btn-large #212121 grey darken-4 QuestionVote"
+            id="question_poll_prompts_maybe">Maybe/Not Sure</button>
+          <button class="waves-effect waves-light btn-large #212121 grey darken-4 QuestionVote"
+            id="question_poll_prompts_no">No</button>
         </section>
       </section>
       <button class="waves-effect waves-light btn-large #212121 grey darken-4" id="raise_hand">Raise Hand</button>
@@ -99,6 +99,7 @@
           <ul class="collection with-header">
             <li class="collection-header"><h4>Poll Types</h4></li>
             <li class="modal-close collection-item hoverable" id="emote_poll"><div>Emote Poll<a class="secondary-content grey-text">😄, 🙂, 😕</a></div></li>
+            <li class="modal-close collection-item hoverable" id="question_poll"><div>Question Poll<a class="secondary-content grey-text">Yes, Maybe/Not Sure, No</a></div></li>
           </ul>
         </div>
         <div class="modal-footer">

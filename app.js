@@ -39,6 +39,36 @@ class EmotePoll{
 
 
 }
+class QuestionPoll{
+    constructor(memberCount){
+        this.memberCount = memberCount;
+        this.yesCount = 0;
+        this.noCount = 0;
+        this.maybeCount = 0;
+        this.responsesCount = 0;
+        this.ongoing = true;
+    }
+    addYes(){
+        if(this.responsesCount < this.memberCount){
+            this.yesCount++;
+            this.responsesCount++;
+        }
+    }
+    addNo(){
+        if(this.responsesCount < this.memberCount){
+            this.noCount++;
+            this.responsesCount++;
+        }
+    }
+    addMaybe(){
+        if(this.responsesCount < this.memberCount){
+            this.maybeCount++;
+            this.responsesCount++;
+        }
+    }
+
+
+}
 //--------------------------MAIN CLASSES-----------------------------------
 class Room{
     constructor(roomId, ownerName, ownerId){
@@ -47,6 +77,7 @@ class Room{
         this.ownerId = ownerId;
         this.members = [];
         this.emote_poll;
+        this.question_poll;
     }
 
     setMemberHand(memberId, handState){
@@ -73,8 +104,6 @@ class Room{
         let tmp = `<div class="Owner">${this.ownerName}</div>`;
         tmp += `<div class="StudentDesks">`;
         for(let i=0; i < this.members.length; i++){
-            console.log(this.members[i]);
-            console.log(this.members);
             if(this.members[i].handRaised)
                 tmp+= `<div class="RaisedDesk">✋ ${this.members[i].username}</div>`;
             else
@@ -137,18 +166,16 @@ io.on('connection', (socket) => {
             let newRoom;
             let myUsername = data.username;
             
+            //Find a new room
             do{
                 newRoom = Math.floor(Math.random() * (MINROOM*10));
-                //console.log(newRoom);
             }
             while(!(typeof rooms[newRoom/MINROOM] == 'undefined' && newRoom > MINROOM && newRoom < MAXROOM))
             //what if no more rooms available?
     
             socket.leave('default');
             socket.join(newRoom);
-    
             socket.room = newRoom;
-    
             rooms[newRoom/MINROOM] = new Room(newRoom, myUsername, socket.id);
             console.log("Created Room" + newRoom);
             socket.emit('created', {room : newRoom , username : myUsername});
@@ -164,7 +191,7 @@ io.on('connection', (socket) => {
     //---------------------------------JOIN---------------------------------
     socket.on('join_room', (data) => {
         try{
-            let myUsername = data.username;
+            let myUsername = data.username; //Username profanity filter could be added here
             let myRoom = data.room;
             if(!(rooms[myRoom/MINROOM] == null)){
                 socket.username = myUsername;
@@ -180,7 +207,7 @@ io.on('connection', (socket) => {
                 socket.emit('client_error', "Room not found.")
             }
         }
-        catch{
+        catch(error){
             console.error(error);
             socket.emit('client_error', "Could not join room.");
         }
@@ -193,7 +220,7 @@ io.on('connection', (socket) => {
             socket.username = null;
             socket.join('default');
         }
-        catch{
+        catch(error){
             console.error(error);
             socket.emit('client_error', "Could not leave room.");
         }
@@ -217,12 +244,17 @@ io.on('connection', (socket) => {
                         //send to all except sender
                         socket.to(socket.room).emit('ask_poll',"emote_poll");
                         break;
+                    case 'question_poll':
+                        rooms[socket.room/MINROOM].question_poll = new QuestionPoll(rooms[socket.room/MINROOM].members.length);
+                        //send to all except sender(room owner)
+                        socket.to(socket.room).emit('ask_poll',"question_poll");
+                        break;
 
                     default: return;
                 }
             }
         }
-        catch{
+        catch(error){
             console.error(error);
             socket.emit('client_error', "Could not start poll.");
         }
@@ -230,7 +262,6 @@ io.on('connection', (socket) => {
 
     socket.on('poll_response', (data) =>{
         try{
-            console.log("client responded")
             switch(data.poll_type){
                 case 'emote_poll':
                     if(rooms[socket.room/MINROOM].emote_poll.ongoing)
@@ -247,31 +278,53 @@ io.on('connection', (socket) => {
                             default: return;                                        
                     }
                     break;
+                case 'question_poll':
+                    if(rooms[socket.room/MINROOM].question_poll.ongoing)
+                        switch (data.response){
+                            case 'yes':
+                                rooms[socket.room/MINROOM].question_poll.addYes();
+                                break;
+                            case 'no':
+                                rooms[socket.room/MINROOM].question_poll.addNo();
+                                break;
+                            case 'maybe':
+                                rooms[socket.room/MINROOM].question_poll.addMaybe();
+                                break;
+                            default: return;                                        
+                    }
+                    break;
                 default: return;
             }
         }
-        catch{
+        catch(error){
             console.error(error);
-            socket.emit('client_error', "Could not process resoponse.");
+            socket.emit('client_error', "Could not process response.");
         }
     })
     socket.on('get_poll_results', (data) =>{
         try{
-            console.log("poll times up")
             switch(data.poll_type){
                 case 'emote_poll':
                     if(rooms[socket.room/MINROOM].emote_poll.ongoing){
                         rooms[socket.room/MINROOM].emote_poll.ongoing = false;
-                        console.log("sending poll results");
+                        console.log("Sending emote poll results for room" + socket.room);
                         io.in(socket.room).emit('poll_results',{ 'poll_type' : 'emote_poll', 'member_count': rooms[socket.room/MINROOM].emote_poll.memberCount , 'response_count' : rooms[socket.room/MINROOM].emote_poll.responsesCount, 'smile_count':rooms[socket.room/MINROOM].emote_poll.smileCount, 'meh_count': rooms[socket.room/MINROOM].emote_poll.mehCount, 'frown_count' : rooms[socket.room/MINROOM].emote_poll.frownCount });
                         rooms[socket.room/MINROOM].emote_poll = null;
                     }
                 break;
+                case 'question_poll':
+                    if(rooms[socket.room/MINROOM].question_poll.ongoing){
+                        rooms[socket.room/MINROOM].question_poll.ongoing = false;
+                        console.log("Sending question poll results for room" + socket.room);
+                        io.in(socket.room).emit('poll_results',{ 'poll_type' : 'question_poll', 'member_count': rooms[socket.room/MINROOM].question_poll.memberCount , 'response_count' : rooms[socket.room/MINROOM].question_poll.responsesCount, 'yes_count':rooms[socket.room/MINROOM].question_poll.yesCount, 'maybe_count': rooms[socket.room/MINROOM].question_poll.maybeCount, 'no_count' : rooms[socket.room/MINROOM].question_poll.noCount });
+                        rooms[socket.room/MINROOM].question_poll = null;
+                    }
+                break;                
     
                 default: return;
             }
         }
-        catch{
+        catch(error){
             console.error(error);
             socket.emit('client_error', "Could not get poll results.");
         }
@@ -283,14 +336,14 @@ io.on('connection', (socket) => {
     socket.on('hand_changed', (data) =>{
         try{
             let myRoom = socket.room;
-            //to do, make sure handstate is a bool
+            //to do, make sure handstate is a bool. Is this really though?
             console.log(socket.username+" changed their hand");
             if(!(rooms[myRoom/MINROOM] == null)){
             if(rooms[myRoom/MINROOM].setMemberHand(socket.id, data.handState))
                 io.in(myRoom).emit('update_page', {'html' : rooms[myRoom/MINROOM].toString()})
             }
         }
-        catch{
+        catch(error){
             console.error(error);
             socket.emit('client_error', "Could not change hand state.");
         }
@@ -306,6 +359,7 @@ io.on('connection', (socket) => {
                 if(rooms[socket.room/MINROOM].ownerId == socket.id){
                     io.in(socket.room).emit('leave_room')   //broadcast to all users to go back to home screen
                     rooms[socket.room/MINROOM] = null;      //nullify the room so it can be used latter
+                    console.log("Room " + socket.room + " has be removed")
                 
                 
                 }
@@ -316,7 +370,7 @@ io.on('connection', (socket) => {
                 }
             }
         }
-        catch{
+        catch(error){
             console.error(error);
         }
         
