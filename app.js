@@ -4,6 +4,11 @@ let rooms = [];
 const MINROOM = 10000;
 const MAXROOM = 99999
 
+
+//========================================================================
+//                              CLASSES
+//========================================================================
+//------------------------------POLL CLASSES------------------------------
 class EmotePoll{
     constructor(memberCount){
         this.memberCount = memberCount;
@@ -34,7 +39,7 @@ class EmotePoll{
 
 
 }
-
+//--------------------------MAIN CLASSES-----------------------------------
 class Room{
     constructor(roomId, ownerName, ownerId){
         this.id = roomId;
@@ -87,6 +92,10 @@ class Member{
     }
 }
 
+//========================================================================
+//                              PRELIMINARIES
+//========================================================================
+
 //set the template engine ejs
 app.set('view engine', 'ejs')
 
@@ -108,13 +117,21 @@ server = app.listen(3000)
 const io = require("socket.io")(server)
 
 
+//========================================================================
+//                          MAIN CONNECTION
+//========================================================================
 //listen on every connection
 io.on('connection', (socket) => {
+
+    //-----------------"CONSTRUCTOR"--------------------------
     console.log(socket.id + ' connected')
-    
     socket.room = 'default';
     socket.join('default')
 
+    //========================================================================
+    //                          ROOM MGMT
+    //========================================================================
+    //---------------------------------CREATE---------------------------------
     socket.on('create_room', (data) =>{
         try{
             let newRoom;
@@ -144,20 +161,7 @@ io.on('connection', (socket) => {
 
     })
 
-
-    socket.on('left_room', (data) => {
-        try{
-            socket.leave(socket.room);
-            socket.room = 'default';
-            socket.username = null;
-            socket.join('default');
-        }
-        catch{
-            console.error(error);
-            socket.emit('client_error', "Could not leave room.");
-        }
-    })
-
+    //---------------------------------JOIN---------------------------------
     socket.on('join_room', (data) => {
         try{
             let myUsername = data.username;
@@ -181,25 +185,27 @@ io.on('connection', (socket) => {
             socket.emit('client_error', "Could not join room.");
         }
     })
-
-    socket.on('hand_changed', (data) =>{
+    //---------------------------------LEAVE---------------------------------
+    socket.on('left_room', (data) => {
         try{
-            //let myRoom = data.room;
-            let myRoom = socket.room;
-            //to do, make sure handstate is a bool
-            console.log(socket.username+" changed their hand");
-            if(!(rooms[myRoom/MINROOM] == null)){
-            if(rooms[myRoom/MINROOM].setMemberHand(socket.id, data.handState))
-                io.in(myRoom).emit('update_page', {'html' : rooms[myRoom/MINROOM].toString()})
-            }
+            socket.leave(socket.room);
+            socket.room = 'default';
+            socket.username = null;
+            socket.join('default');
         }
         catch{
             console.error(error);
-            socket.emit('client_error', "Could not change hand state.");
+            socket.emit('client_error', "Could not leave room.");
         }
-
     })
 
+
+
+
+
+    //========================================================================
+    //                          POLLS
+    //========================================================================
     socket.on('start_poll', (data) => {
         try{
             //make sure request came from room owner
@@ -271,23 +277,40 @@ io.on('connection', (socket) => {
         }
     })
 
-    
+    //========================================================================
+    //                          MISC.
+    //========================================================================
+    socket.on('hand_changed', (data) =>{
+        try{
+            let myRoom = socket.room;
+            //to do, make sure handstate is a bool
+            console.log(socket.username+" changed their hand");
+            if(!(rooms[myRoom/MINROOM] == null)){
+            if(rooms[myRoom/MINROOM].setMemberHand(socket.id, data.handState))
+                io.in(myRoom).emit('update_page', {'html' : rooms[myRoom/MINROOM].toString()})
+            }
+        }
+        catch{
+            console.error(error);
+            socket.emit('client_error', "Could not change hand state.");
+        }
+
+    })
 
 
     socket.on('disconnect', function() {
-        console.log('Got disconnected!');
-
         try{
+            //Was the client part of a room?
             if((socket.room !='default') && !(typeof rooms[socket.room/MINROOM] == 'undefined' || rooms[socket.room/MINROOM] == null)){
-                console.log(rooms[socket.room/MINROOM])
+                //Did the owner just leave?
                 if(rooms[socket.room/MINROOM].ownerId == socket.id){
-                    io.in(socket.room).emit('leave_room')
-                    rooms[socket.room/MINROOM] = null;
-                //broadcast to all users to go back to home screen
-                //nullify the room
+                    io.in(socket.room).emit('leave_room')   //broadcast to all users to go back to home screen
+                    rooms[socket.room/MINROOM] = null;      //nullify the room so it can be used latter
+                
+                
                 }
                 else{
-                //not room owner, just a regular user
+                    //Not room owner, just a regular user
                     rooms[socket.room/MINROOM].removeMember(socket.id);
                     io.in(socket.room).emit('update_page', {'html' : rooms[socket.room/MINROOM].toString()})
                 }
