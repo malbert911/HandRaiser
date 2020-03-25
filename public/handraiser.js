@@ -109,31 +109,31 @@ $(function () {
 	emote_poll.click(function () {
 		$("#OwnerFooter").hide();
 		socket.emit('start_poll', { 'poll_type': 'emote_poll' });
-		M.toast({ html: `Started emote poll, poll will be over in 5 seconds` });
+		M.toast({ html: `Started emote poll, poll will be over in 10 seconds` });
 		setTimeout(function () {
 			socket.emit('get_poll_results', { 'poll_type': 'emote_poll' });
 			$("#OwnerFooter").show();
-		}, 5000);
+		}, 10000);
 
 	})
 	question_poll.click(function () {
 		$("#OwnerFooter").hide();
 		socket.emit('start_poll', { 'poll_type': 'question_poll' });
-		M.toast({ html: `Started question poll, poll will be over in 5 seconds` });
+		M.toast({ html: `Started question poll, poll will be over in 10 seconds` });
 		setTimeout(function () {
 			socket.emit('get_poll_results', { 'poll_type': 'question_poll' });
 			$("#OwnerFooter").show();
-		}, 5000);
+		}, 10000);
 
 	})
 	multiplechoice_poll.click(function () {
 		$("#OwnerFooter").hide();
 		socket.emit('start_poll', { 'poll_type': 'multiplechoice_poll' });
-		M.toast({ html: `Started multiple choice poll, poll will be over in 5 seconds` });
+		M.toast({ html: `Started multiple choice poll, poll will be over in 10 seconds` });
 		setTimeout(function () {
 			socket.emit('get_poll_results', { 'poll_type': 'multiplechoice_poll' });
 			$("#OwnerFooter").show();
-		}, 5000);
+		}, 10000);
 
 	})
 
