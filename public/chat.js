@@ -37,9 +37,10 @@ $(function(){
 
 
 	join_room.click(function(){
-		//TODO
-		//make sure input is valid
-		socket.emit('join_room', {'username' : username.val(), 'room' : room.val()})
+		if( username.val() )
+			socket.emit('join_room', {'username' : username.val(), 'room' : room.val()})
+		else
+			M.toast({html: 'Please enter a name'})
 	})
 
 	socket.on('joined', (data) =>{
@@ -51,7 +52,6 @@ $(function(){
 		$("#MemberFooter").show();
 		
 		M.toast({html: `Joined room ${data.room}`})
-		//go to room page
 	})
 
 	//=============================================
@@ -69,14 +69,15 @@ $(function(){
 	//			CREATE A ROOM
 	//=============================================
 	create_room.click(function(){
-		//TODO
-		//make sure field not empty
-		socket.emit('create_room', {'username' : username.val()});
+		if( username.val() )
+			socket.emit('create_room', {'username' : username.val()});
+		else
+			M.toast({html: 'Please enter a name'})
+		
 	})
 	socket.on('created', (data) =>{
 		myRoom = data.room;
 		myUsername = data.username;
-		alert(myRoom);
 		$("#room_id").append(myRoom);
 		$("#CreateJoin").hide();
 		$("#RoomView").show();
@@ -121,9 +122,6 @@ $(function(){
 	socket.on('ask_poll', (data) => {
         switch (data){
 			case 'emote_poll':
-				//setup new emote poll
-				//M.toast({html: `Emote Poll Started, please vote.`});
-
 				$("#emote_poll_prompts").show();
 				break;
 
@@ -137,16 +135,15 @@ $(function(){
 			console.log("was emote poll");
 			$("#emote_poll_prompts").hide();
 			poll_results.show();
+
 			//=========CHARTIST.JS=========
 			new Chartist.Bar('.ct-chart', {
 				labels: ['😄', '🙂', '😕'],
 				series: [data.smile_count, data.meh_count, data.frown_count]
 			}, {distributeSeries: true });
 			  
-			
 			$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
 
-			//poll_results_content.html(`<p>Participated: ${data.response_count} / ${data.member_count} Smiles: ${data.smile_count} Meh: ${data.meh_count} Frowns: ${data.frown_count}</p>`);
 			console.log("showed results");
 			break;
 			default: return;
