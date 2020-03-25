@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/malbert911/HandRaiser.git"
   },
-  "author": "Noufel Gouirhate",
-  "license": "ISC",
+  "author": "Matthew Albert",
+  "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/malbert911/HandRaiser/issues"
   },

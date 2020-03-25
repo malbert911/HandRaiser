@@ -6,7 +6,7 @@ Donations are greatly appreciated to cover server costs and keep this website fr
 
 # Install
 1. Clone this repository
-2. Change `localhost` in the following line of `handraiser.js` to reflect you setup: `let socket = io.connect('http://localhost:3000')`
+2. Change `localhost` in the following line of `handraiser.js` to reflect your setup: `let socket = io.connect('http://localhost:3000')`
 3. Get dependecies with `npm install -d`
 4. Start the server with `node app.js`
 
