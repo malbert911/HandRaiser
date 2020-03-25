@@ -145,3 +145,9 @@ flex-direction: column;
 .ct-label {
     font-size: x-large;
 }
+.HomepageFooter{
+    display: flex;
+    text-align: center;
+    justify-content: space-around;
+    align-items: flex-end;
+}

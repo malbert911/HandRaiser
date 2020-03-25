@@ -3,20 +3,20 @@
 
 <head>
   <meta http-equiv="Content-Type" const="text/html;charset=UTF-8" />
-  <link href="http://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet" type="text/css">
+  <!--<link href="http://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet" type="text/css">-->
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <!--Let browser know website is optimized for mobile-->
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-  <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+  <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body class="#424242 grey darken-3">
-  <h1 class="#212121 grey darken-4" id="MainHeader">Hand Raiser ✋</h1>
+  <a href="/" ><h1 class="#212121 grey darken-4" id="MainHeader">Hand Raiser ✋</h1></a>
 
   <!-------------------WELCOME-------------------->
   <div id="CreateJoin">
@@ -50,8 +50,30 @@
           <a class="waves-effect waves-light btn-large #212121 grey darken-4" id="create_room">Create</a>
         </div>
       </div>
+      <div class="HomepageFooter" style="width: 100%;">
+          <a class="modal-trigger" href="#about_modal">About</a>
+          <div id="about_modal" class="modal">
+            <div class="modal-content black-text">
+              <h4>About Hand Raiser</h4>
+              <p>While our classes were temporarily suspended due to COVID-19, Logan McGovern and myself, Matthew Albert, started this project. The objective is to provide an easy way to teachers for get feedback from students in an online class.<br/>
+                Hand Raiser allows individuals to create rooms, have other join it, create quick polls and track whose hand is raised!<br/>
+                Feel free to contribute to this open source project on GitHub.<br/>
+                Donations are greatly appreciated to cover server costs and keep this website free.<br/>
+                Contact me at <a href="mailto:m@malbert.xyz">m@malbert.xyz</a> or <a href="mailto:matthew.albert911@gmail.com">matthew.albert911@gmail.com</a>
+                </p>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+            </div>
+          </div>
+
+
+          <a  href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=matthew.albert911%40gmail.com&item_name=Donate+to+Hand+Raiser+project&currency_code=CAD&source=url">Help cover server costs</a>
+
+          <a href="https://github.com/malbert911/HandRaiser">Check us out on GitHub</a>
+        </div>
+      </div>
     </div>
-  </div>
   <!-------------------END-WELCOME-------------------->
   <div id="RoomView" style="display: none;">
     <header>
@@ -109,7 +131,7 @@
     </footer>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
   <script src="chat.js"></script>
 </body>
 
