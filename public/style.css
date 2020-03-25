@@ -90,9 +90,7 @@ color: honeydew;
     flex-direction: column;
     
 }
-#username, #NameInput{
-    width: 100%;
-}
+
 #Create{
     height: 100%;
     display: flex;

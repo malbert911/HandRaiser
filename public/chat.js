@@ -99,10 +99,12 @@ $(function(){
 	//------------OWNER----------------------------
 
 	emote_poll.click(function(){
+		$("#OwnerFooter").hide();
 		socket.emit('start_poll', {'poll_type' : 'emote_poll'});
-		M.toast({html: `Started Emote Poll, poll will be over in 5 seconds`});
+		M.toast({html: `Started emote poll, poll will be over in 5 seconds`});
 		setTimeout(function () {
 			socket.emit('get_poll_results', {'poll_type' : 'emote_poll'});
+			$("#OwnerFooter").show();
 		}, 5000);
 		
 	})
@@ -136,15 +138,13 @@ $(function(){
 			$("#emote_poll_prompts").hide();
 			poll_results.show();
 			//=========CHARTIST.JS=========
-			  new Chartist.Bar('.ct-chart', {
+			new Chartist.Bar('.ct-chart', {
 				labels: ['😄', '🙂', '😕'],
 				series: [data.smile_count, data.meh_count, data.frown_count]
-			  }, {
-				distributeSeries: true
-			  });
+			}, {distributeSeries: true });
 			  
 			
-			
+			$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
 
 			//poll_results_content.html(`<p>Participated: ${data.response_count} / ${data.member_count} Smiles: ${data.smile_count} Meh: ${data.meh_count} Frowns: ${data.frown_count}</p>`);
 			console.log("showed results");

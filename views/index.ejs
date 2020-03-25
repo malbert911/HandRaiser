@@ -21,13 +21,17 @@
   <!-------------------WELCOME-------------------->
   <div id="CreateJoin">
     <div class="row" id="Name">
-      <h3>Enter Your Name</h3>
+      
 
       <div class="row">
-        <div class="input-field col s6" id="NameInput">
+        <div class="col s12" id="NameInput">
+          <h3>Enter Your Name</h3>
+          <div class="input-field">
+            <input id="input_username" type="text">
+            <label for="username">Name</label>
+          </div>
           <!--<i class="material-icons prefix">account_circle</i>-->
-          <input id="input_username" type="text">
-          <label for="username">Name</label>
+
         </div>
         </form>
       </div>
@@ -55,9 +59,11 @@
       <h4 class="#212121 grey darken-2" id="room_id"> Room ID: </h4>
     </header>
     <!--Classroom Div-->
-    <section id="poll_results" style="display: none;">
+    <section id="poll_results" class="card-panel grey" style="display: none;">
     <div id="poll_results_content" class="ct-chart ct-double-octave"></div>
-    <a class="waves-effect waves-light btn-small #212121 grey darken-4 right" onclick='$("#poll_results").hide();''><i class="material-icons right">clear</i>Dismiss</a>
+    <p id="poll_participation"></p>
+    <div class="card-action"><a class="waves-effect waves-light btn-small #212121 grey darken-4" onclick='$("#poll_results").hide();'><i class="material-icons right">clear</i>Dismiss</a></div>
+    
     </section>
     <div id="MainView">
 
