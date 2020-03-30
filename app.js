@@ -420,7 +420,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', function () {
         try {
             //Was the client part of a room?
-            if ((socket.room != 'default') && !(typeof rooms[socket.room / MINROOM] == 'undefined' || rooms[socket.room / MINROOM] == null)) {
+            if (socket.room != 'default') {
                 //Did the owner just leave?
                 if (rooms[socket.room / MINROOM].ownerId == socket.id) {
                     io.in(socket.room).emit('leave_room')   //broadcast to all users to go back to home screen
