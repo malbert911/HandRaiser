@@ -200,7 +200,7 @@ io.on('connection', (socket) => {
     socket.on('create_room', (data) => {
         try {
             let newRoom;
-            let myUsername = data.username;
+            let myUsername = data.username.replace(/(<([^>]+)>)/ig,"");
 
             //Find a new room
             do {
@@ -227,7 +227,7 @@ io.on('connection', (socket) => {
     //---------------------------------JOIN---------------------------------
     socket.on('join_room', (data) => {
         try {
-            let myUsername = data.username; //Username profanity filter could be added here
+            let myUsername = data.username.replace(/(<([^>]+)>)/ig,""); //Username profanity filter could be added here
             let myRoom = data.room;
             if (!(rooms[myRoom / MINROOM] == null)) {
                 socket.username = myUsername;
