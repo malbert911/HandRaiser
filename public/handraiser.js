@@ -78,10 +78,10 @@ $(function () {
 	//			CREATE A ROOM
 	//=============================================
 	create_room.click(function () {
-		if (username.val())
+		if (username.val() && username.val().length <= MAXNAMELENGTH)
 			socket.emit('create_room', { 'username': username.val() });
 		else
-			M.toast({ html: 'Please enter a name' })
+			M.toast({ html: 'Please enter a valid/ shorter name' })
 
 	})
 	socket.on('created', (data) => {
