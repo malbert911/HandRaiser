@@ -6,6 +6,7 @@ Donations are greatly appreciated to cover server costs and keep this website fr
 
 # Video Demo
 [![Video demo of the Hand Raiser Project](http://img.youtube.com/vi/FCBdoWGiYuw/0.jpg)](http://www.youtube.com/watch?v=FCBdoWGiYuw "Hand Raiser Demo - Track raised hands and create quick polls for online classes")
+
 https://www.youtube.com/watch?v=FCBdoWGiYuw
 
 # Install
