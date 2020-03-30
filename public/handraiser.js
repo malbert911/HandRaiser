@@ -34,11 +34,37 @@ $(function () {
 	let multiplechoice_poll_prompts_c = $("#multiplechoice_poll_prompts_c")
 	let multiplechoice_poll_prompts_d = $("#multiplechoice_poll_prompts_d")
 
+
 	let handRaised = false;
 	let myRoom;
 	let myUsername;
 
 
+	//https://stackoverflow.com/questions/31109581/javascript-timer-progress-bar
+	function createProgressbar(id, duration, callback) {
+		// We select the div that we want to turn into a progressbar
+		var progressbar = document.getElementById(id);
+		progressbar.className = 'progressbar';
+	  
+		// We create the div that changes width to show progress
+		var progressbarinner = document.createElement('div');
+		progressbarinner.className = 'inner';
+	  
+		// Now we set the animation parameters
+		progressbarinner.style.animationDuration = duration;
+	  
+		// Eventually couple a callback
+		if (typeof(callback) === 'function') {
+		  progressbarinner.addEventListener('animationend', callback);
+		}
+	  
+		// Append the progressbar to the main progressbardiv
+		progressbar.appendChild(progressbarinner);
+	  
+		// When everything is set up we start the animation
+		progressbarinner.style.animationPlayState = 'running';
+	  }
+	  
 
 	//=============================================
 	//			JOIN A ROOM
@@ -112,6 +138,7 @@ $(function () {
 		$("#OwnerFooter").hide();
 		socket.emit('start_poll', { 'poll_type': 'emote_poll' });
 		M.toast({ html: `Started emote poll, poll will be over in 10 seconds` });
+		createProgressbar('progressbar1', '10s');
 		setTimeout(function () {
 			socket.emit('get_poll_results', { 'poll_type': 'emote_poll' });
 			$("#OwnerFooter").show();
@@ -122,6 +149,7 @@ $(function () {
 		$("#OwnerFooter").hide();
 		socket.emit('start_poll', { 'poll_type': 'question_poll' });
 		M.toast({ html: `Started question poll, poll will be over in 10 seconds` });
+		createProgressbar('progressbar1', '10s');
 		setTimeout(function () {
 			socket.emit('get_poll_results', { 'poll_type': 'question_poll' });
 			$("#OwnerFooter").show();
@@ -132,6 +160,7 @@ $(function () {
 		$("#OwnerFooter").hide();
 		socket.emit('start_poll', { 'poll_type': 'multiplechoice_poll' });
 		M.toast({ html: `Started multiple choice poll, poll will be over in 10 seconds` });
+		createProgressbar('progressbar1', '10s');
 		setTimeout(function () {
 			socket.emit('get_poll_results', { 'poll_type': 'multiplechoice_poll' });
 			$("#OwnerFooter").show();
@@ -161,6 +190,7 @@ $(function () {
 				break;
 			default: return;
 		}
+		createProgressbar('progressbar1', '10s');
 	})
 	socket.on('poll_results', (data) => {
 		switch (data.poll_type) {
@@ -199,11 +229,13 @@ $(function () {
 					series: [data.a_count, data.b_count, data.c_count, data.d_count]
 				}, { distributeSeries: true });
 
+				
 				$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
 
 				break;
 			default: return;
 		}
+		$("#progressbar1").empty();
 	})
 
 	//--------------POLL RESPONSES-------------------
