@@ -1,5 +1,7 @@
 M.AutoInit();
 $(function () {
+
+	const MAXNAMELENGTH = 15;
 	//make connection
 	let socket = io.connect('http://localhost:3000')
 
@@ -44,10 +46,10 @@ $(function () {
 
 
 	join_room.click(function () {
-		if (username.val())
+		if (username.val() && username.val().length <= MAXNAMELENGTH)
 			socket.emit('join_room', { 'username': username.val(), 'room': room.val() })
 		else
-			M.toast({ html: 'Please enter a name' })
+			M.toast({ html: 'Please enter a valid/ shorter name' })
 	})
 
 	socket.on('joined', (data) => {
