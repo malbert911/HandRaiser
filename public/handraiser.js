@@ -38,6 +38,11 @@ $(function () {
 	let handRaised = false;
 	let myRoom;
 	let myUsername;
+	let soundOn = true;
+
+	//https://notificationsounds.com/notification-sounds/when-604
+	//https://creativecommons.org/licenses/by/4.0/legalcode
+	let handRaisedSound = new Audio('handRaisedSound.mp3');
 
 
 	//https://stackoverflow.com/questions/31109581/javascript-timer-progress-bar
@@ -117,6 +122,7 @@ $(function () {
 		$("#CreateJoin").hide();
 		$("#RoomView").show();
 		$("#OwnerFooter").show();
+		$("#sound_toggle").show();
 		M.toast({ html: `Created room ${data.room}` })
 		//prompt to share room id?
 	})
@@ -133,6 +139,24 @@ $(function () {
 	})
 
 	//------------OWNER----------------------------
+
+	socket.on('member_hand_raised', (data) => {
+		M.toast({html: `${data} raised their hand`})
+		if(soundOn)
+			handRaisedSound.play();
+
+	})
+
+	$("#sound_toggle_button").click(function (){
+		if(soundOn){
+			soundOn = false;				//Sound is on, disable it and change the icon
+			$("#sound_toggle_icon").html("volume_off");
+		}
+		else{
+			soundOn = true;				//Sound is off, enable it and change the icon
+			$("#sound_toggle_icon").html("volume_up");
+		}
+	})
 
 	emote_poll.click(function () {
 		$("#OwnerFooter").hide();

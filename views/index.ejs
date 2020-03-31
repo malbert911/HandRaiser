@@ -19,6 +19,7 @@
   <a href="/">
     <h1 class="#212121 grey darken-4" id="MainHeader">Hand Raiser ✋</h1>
   </a>
+  
 
   <!-------------------WELCOME-------------------->
   <div id="CreateJoin">
@@ -99,6 +100,7 @@
     </section>
     <div id="MainView">
     </div>
+      <!--================================MEMBER FOOTER=====================================-->
     <footer id="MemberFooter" style="display: none;">
       <section id="poll_prompt">
         <section id="emote_poll_prompts" style="display: none;">
@@ -130,13 +132,19 @@
       </section>
       <button class="waves-effect waves-light btn-large #212121 grey darken-4" id="raise_hand">Raise Hand</button>
     </footer>
+    <!--================================OWNER FOOTER=====================================-->
+    <!-----------------ROOM OWNER VOLUME CONTROL (sound when new raised hand)-->
+<div class="fixed-action-btn" id="sound_toggle" style="display: none;">
+  <a class="btn-floating btn-large waves-effect waves-light grey darken-4" id="sound_toggle_button">
+    <i class="large material-icons" id="sound_toggle_icon">volume_up</i>
+  </a>
+</div>
     <footer id="OwnerFooter" style="display: none;">
       <!-- Modal Trigger -->
-      <a class="waves-effect waves-light btn modal-trigger #212121 grey darken-4 OwnerFooterItem"
-        href="#choose_poll">Start A Poll</a>
+      <a class="waves-effect waves-light btn modal-trigger #212121 grey darken-4 OwnerFooterItem" href="#choose_poll">Start A Poll</a>
 
       <!-- Modal Structure -->
-      <div id="choose_poll" class="modal bottom-sheet">
+      <div id="choose_poll" class="modal">
         <div class="modal-content">
           <ul class="collection with-header">
             <li class="collection-header">

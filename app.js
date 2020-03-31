@@ -139,10 +139,13 @@ class Room {
     toString() {
         let tmp = `<div class="Owner">${this.ownerName}</div>`;
         tmp += `<div class="StudentDesks">`;
+        //Get the raised hand first so they appear on the top of the UI
         for (let i = 0; i < this.members.length; i++) {
             if (this.members[i].handRaised)
                 tmp += `<div class="RaisedDesk">✋ ${this.members[i].username}</div>`;
-            else
+        }
+        for (let i = 0; i < this.members.length; i++) {
+            if (!this.members[i].handRaised)
                 tmp += `<div class="Desk">${this.members[i].username}</div>`
         }
         tmp += `</div>`;
@@ -409,6 +412,8 @@ io.on('connection', (socket) => {
             if (!(rooms[myRoom / MINROOM] == null)) {
                 if (rooms[myRoom / MINROOM].setMemberHand(socket.id, data.handState))
                     io.in(myRoom).emit('update_page', { 'html': rooms[myRoom / MINROOM].toString() })
+                    if(data.handState)
+                        io.in(rooms[myRoom / MINROOM].ownerId).emit('member_hand_raised', socket.username);
             }
         }
         catch (error) {
@@ -434,7 +439,7 @@ io.on('connection', (socket) => {
                 else {
                     //Not room owner, just a regular user
                     rooms[socket.room / MINROOM].removeMember(socket.id);
-                    io.in(socket.room).emit('update_page', { 'html': rooms[socket.room / MINROOM].toString() })
+                    io.in(myRoom).emit('update_page', { 'html': rooms[myRoom / MINROOM].toString() });
                 }
             }
         }
