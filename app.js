@@ -443,7 +443,7 @@ io.on('connection', (socket) => {
                 else {
                     //Not room owner, just a regular user
                     rooms[socket.room / MINROOM].removeMember(socket.id);
-                    io.in(myRoom).emit('update_page', { 'html': rooms[myRoom / MINROOM].toString() });
+                    io.in(socket.room).emit('update_page', { 'html': rooms[socket.room / MINROOM].toString() });
                 }
             }
         }
