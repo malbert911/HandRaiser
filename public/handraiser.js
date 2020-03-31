@@ -24,7 +24,7 @@ $(function () {
 	let emote_poll_prompts_frown = $("#emote_poll_prompts_frown")
 
 	let question_poll = $("#question_poll")
-	let question_poll_prompts_yes = $("#question_poll_prompts_smile")
+	let question_poll_prompts_yes = $("#question_poll_prompts_yes")
 	let question_poll_prompts_maybe = $("#question_poll_prompts_maybe")
 	let question_poll_prompts_no = $("#question_poll_prompts_no")
 
