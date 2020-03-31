@@ -148,7 +148,11 @@ class Room {
             if (!this.members[i].handRaised)
                 tmp += `<div class="Desk">${this.members[i].username}</div>`
         }
-        tmp += `</div>`;
+        tmp += "</div>";
+        if(this.members.length == 1 )   //Doing this check for grammar
+            tmp += "<br/><p>1 Participant</p>";
+        else
+        tmp += `<br/><p>${this.members.length} Participants<p>`;
         return tmp;
     }
 }
