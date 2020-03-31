@@ -202,7 +202,14 @@ $(function () {
 				new Chartist.Bar('.ct-chart', {
 					labels: ['😄', '🙂', '😕'],
 					series: [data.smile_count, data.meh_count, data.frown_count]
-				}, { distributeSeries: true });
+				}, 
+				{ 
+					distributeSeries: true, 
+					axisY: {
+						onlyInteger: true,
+						offset: 20
+					  } 
+				});
 
 				$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
 				break;
@@ -214,8 +221,14 @@ $(function () {
 				new Chartist.Bar('.ct-chart', {
 					labels: ['Yes', 'Maybe/Not Sure', 'No'],
 					series: [data.yes_count, data.maybe_count, data.no_count]
-				}, { distributeSeries: true });
-
+				}, 
+				{ 
+					distributeSeries: true, 
+					axisY: {
+						onlyInteger: true,
+						offset: 20
+					  } 
+				});
 				$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
 
 				break;
@@ -227,8 +240,14 @@ $(function () {
 				new Chartist.Bar('.ct-chart', {
 					labels: ['A', 'B', 'C', 'D'],
 					series: [data.a_count, data.b_count, data.c_count, data.d_count]
-				}, { distributeSeries: true });
-
+				}, 
+				{ 
+					distributeSeries: true, 
+					axisY: {
+						onlyInteger: true,
+						offset: 20
+					  } 
+				});
 				
 				$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
 
