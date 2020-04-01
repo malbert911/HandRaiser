@@ -18,9 +18,10 @@
   },
   "homepage": "https://github.com/malbert911/HandRaiser#readme",
   "dependencies": {
-    "ejs": "^2.5.7",
+    "ejs": "^2.7.4",
     "express": "^4.16.2",
-    "nodemon": "^1.14.3",
-    "socket.io": "^2.0.4"
+    "nodemon": "^1.19.4",
+    "push.js": "^1.0.12",
+    "socket.io": "^2.3.0"
   }
 }

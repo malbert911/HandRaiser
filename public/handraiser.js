@@ -124,6 +124,7 @@ $(function () {
 		$("#OwnerFooter").show();
 		$("#sound_toggle").show();
 		M.toast({ html: `Created room ${data.room}` })
+		Push.Permission.request(onGranted, onDenied);
 		//prompt to share room id?
 	})
 
@@ -144,7 +145,7 @@ $(function () {
 		M.toast({html: `${data} raised their hand`})
 		if(soundOn)
 			handRaisedSound.play();
-
+		Push.create(data+ " raised their hand");
 	})
 
 	$("#sound_toggle_button").click(function (){
