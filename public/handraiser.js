@@ -44,6 +44,8 @@ $(function () {
 	//https://creativecommons.org/licenses/by/4.0/legalcode
 	let handRaisedSound = new Audio('handRaisedSound.mp3');
 
+	let currentNotif;
+	let lastNotif = null;
 
 	//https://stackoverflow.com/questions/31109581/javascript-timer-progress-bar
 	function createProgressbar(id, duration, callback) {
@@ -124,7 +126,7 @@ $(function () {
 		$("#OwnerFooter").show();
 		$("#sound_toggle").show();
 		M.toast({ html: `Created room ${data.room}` })
-		Push.Permission.request(onGranted, onDenied);
+		
 		//prompt to share room id?
 	})
 
@@ -145,7 +147,18 @@ $(function () {
 		M.toast({html: `${data} raised their hand`})
 		if(soundOn)
 			handRaisedSound.play();
-		Push.create(data+ " raised their hand");
+		//Visual notification
+		//if a new notification appeared close the other one
+		if(lastNotif != null){
+			lastNotif.then(function(notification) {
+				notification.close();
+			});
+		}
+		//show notification
+		currentNotif = Push.create(data+ " raised their hand", {
+			silent: true
+		});
+		lastNotif = currentNotif;
 	})
 
 	$("#sound_toggle_button").click(function (){
