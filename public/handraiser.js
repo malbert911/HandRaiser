@@ -147,9 +147,11 @@ $(function () {
 
 	socket.on('member_hand_raised', (data) => {
 		M.toast({html: `${data} raised their hand`})
-		if(soundOn)
+		if(soundOn){
+			//play ding
 			handRaisedSound.play();
-		//Visual notification
+
+			//Visual notification
 		//if a new notification appeared close the other one
 		if(lastNotif != null){
 			lastNotif.then(function(notification) {
@@ -163,6 +165,8 @@ $(function () {
 			silent: true
 		});
 		lastNotif = currentNotif;
+		}
+			
 	})
 
 	$("#sound_toggle_button").click(function (){
