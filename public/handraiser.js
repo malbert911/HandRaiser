@@ -157,7 +157,7 @@ $(function () {
 		//show notification
 		currentNotif = Push.create(data+ " raised their hand", {
 			body: "New Hand Raised",
-			icon: 'https://vignette.wikia.nocookie.net/emoji-express/images/7/7e/270b.png/revision/latest/scale-to-width-down/340?cb=20161106101252',
+			icon: 'handEmoji.png',
 			silent: true
 		});
 		lastNotif = currentNotif;
