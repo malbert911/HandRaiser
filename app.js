@@ -3,6 +3,7 @@ const app = express()
 let rooms = [];
 const MINROOM = 10000;
 const MAXROOM = 99999
+const MAXNAMELENGTH = 15;
 
 
 //========================================================================
@@ -208,6 +209,7 @@ io.on('connection', (socket) => {
         try {
             let newRoom;
             let myUsername = data.username.replace(/(<([^>]+)>)/ig,"");
+            myUsername = myUsername.substring(0,MAXNAMELENGTH);
 
             //Find a new room
             do {
