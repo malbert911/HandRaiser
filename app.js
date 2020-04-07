@@ -236,22 +236,28 @@ io.on('connection', (socket) => {
     //---------------------------------JOIN---------------------------------
     socket.on('join_room', (data) => {
         try {
-            let myUsername = data.username.replace(/(<([^>]+)>)/ig,""); //Username profanity filter could be added here
-            myUsername = myUsername.substring(0,MAXNAMELENGTH);
-            let myRoom = data.room;
-            if (!(rooms[myRoom / MINROOM] == null)) {
-                socket.username = myUsername;
-                socket.room = myRoom;
-                socket.leave('default');
-                socket.join(myRoom)
-                rooms[myRoom / MINROOM].members.push(new Member(myUsername, socket.id));
-                socket.emit('joined', { room: myRoom, username: myUsername })
-                io.in(myRoom).emit('update_page', { 'html': rooms[myRoom / MINROOM].toString() })
-                console.log(myUsername + socket.id + " joined room " + myRoom);
+            if(socket.room == 'default'){
+                let myUsername = data.username.replace(/(<([^>]+)>)/ig,""); //Username profanity filter could be added here
+                myUsername = myUsername.substring(0,MAXNAMELENGTH);
+                let myRoom = data.room;
+                if (!(rooms[myRoom / MINROOM] == null)) {
+                    socket.username = myUsername;
+                    socket.room = myRoom;
+                    socket.leave('default');
+                    socket.join(myRoom)
+                    rooms[myRoom / MINROOM].members.push(new Member(myUsername, socket.id));
+                    socket.emit('joined', { room: myRoom, username: myUsername })
+                    io.in(myRoom).emit('update_page', { 'html': rooms[myRoom / MINROOM].toString() })
+                    console.log(myUsername + socket.id + " joined room " + myRoom);
+                }
+                else {
+                    socket.emit('client_error', "Room not found.")
+                }
             }
-            else {
-                socket.emit('client_error', "Room not found.")
+            else{
+                socket.emit('client_error', "You are already part of a room. Refresh the page if this message persists.")
             }
+
         }
         catch (error) {
             console.error(error);
