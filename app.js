@@ -237,6 +237,7 @@ io.on('connection', (socket) => {
     socket.on('join_room', (data) => {
         try {
             let myUsername = data.username.replace(/(<([^>]+)>)/ig,""); //Username profanity filter could be added here
+            myUsername = myUsername.substring(0,MAXNAMELENGTH);
             let myRoom = data.room;
             if (!(rooms[myRoom / MINROOM] == null)) {
                 socket.username = myUsername;
