@@ -239,22 +239,29 @@ io.on('connection', (socket) => {
     socket.on('join_room', (data) => {
         try {
             if(socket.room == 'default'){
-                let myUsername = data.username.replace(/(<([^>]+)>)/ig,""); //Username profanity filter could be added here
-                myUsername = myUsername.substring(0,MAXNAMELENGTH);
-                let myRoom = data.room;
-                if (!(rooms[myRoom / MINROOM] == null)) {
-                    socket.username = myUsername;
-                    socket.room = myRoom;
-                    socket.leave('default');
-                    socket.join(myRoom)
-                    rooms[myRoom / MINROOM].members.push(new Member(myUsername, socket.id));
-                    socket.emit('joined', { room: myRoom, username: myUsername })
-                    io.in(myRoom).emit('update_page', { 'html': rooms[myRoom / MINROOM].toString() })
-                    console.log(myUsername + socket.id + " joined room " + myRoom);
+                let myUsername = data.username.replace(/(<([^>]+)>)/ig,"");     //Santize username
+                //Username profanity filter could be added here
+                myUsername = myUsername.substring(0,MAXNAMELENGTH);             //Truncate if it is too long (there is a client side check for this as well)
+                if(isFinite(data.room) && (data.room > MINROOM) && (data.room < MAXROOM)){      //Make sure the room is a valid number
+                    let myRoom = data.room;
+                    if (!(rooms[myRoom / MINROOM] == null)) {   //Does the room exist?
+                        socket.username = myUsername;           //Save the santized info to the socket itself
+                        socket.room = myRoom;
+                        socket.leave('default');
+                        socket.join(myRoom);                    //Join the socket.io room
+                        rooms[myRoom / MINROOM].members.push(new Member(myUsername, socket.id));            //Join the Room object
+                        socket.emit('joined', { room: myRoom, username: myUsername })                       //Send join confirmation with santized info
+                        io.in(myRoom).emit('update_page', { 'html': rooms[myRoom / MINROOM].toString() })   //Send the updated UI to all room memebers
+                        console.log(myUsername + socket.id + " joined room " + myRoom);
+                    }
+                    else {
+                        socket.emit('client_error', "Room not found.")
+                    }
                 }
-                else {
-                    socket.emit('client_error', "Room not found.")
+                else{
+                    socket.emit('client_error', "Invalid room entered.")    //Room was not a number or out of range
                 }
+
             }
             else{
                 socket.emit('client_error', "You are already part of a room. Refresh the page if this message persists.")
@@ -445,8 +452,8 @@ io.on('connection', (socket) => {
             if (socket.room != 'default') {
                 //Did the owner just leave?
                 if (socket.isOwner) {
-                    io.in(socket.room).emit('leave_room')   //broadcast to all users to go back to home screen
-                    rooms[socket.room / MINROOM] = null;      //nullify the room so it can be used latter
+                    io.in(socket.room).emit('leave_room')       //broadcast to all users to go back to home screen
+                    rooms[socket.room / MINROOM] = null;        //nullify the room so it can be used latter
                     console.log("Room " + socket.room + " has been removed")
 
 
@@ -454,7 +461,7 @@ io.on('connection', (socket) => {
                 else {
                     //Not room owner, just a regular user
                     //Is their room null? (Already Deleted)
-                    if(!rooms[socket.room / MINROOM] == null){
+                    if(!(rooms[socket.room / MINROOM] == null)){
                         rooms[socket.room / MINROOM].removeMember(socket.id);   //Room is still active, remove the user
                         io.in(socket.room).emit('update_page', { 'html': rooms[socket.room / MINROOM].toString() });//Update others in room that they have left
                     }
