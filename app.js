@@ -200,6 +200,7 @@ io.on('connection', (socket) => {
     console.log(socket.id + ' connected')
     socket.room = 'default';
     socket.join('default')
+    socket.isOwner = false;
 
     //========================================================================
     //                          ROOM MGMT
@@ -221,6 +222,7 @@ io.on('connection', (socket) => {
             socket.leave('default');
             socket.join(newRoom);
             socket.room = newRoom;
+            socket.isOwner = true;
             rooms[newRoom / MINROOM] = new Room(newRoom, myUsername, socket.id);
             console.log("Created Room" + newRoom);
             socket.emit('created', { room: newRoom, username: myUsername });
@@ -442,17 +444,21 @@ io.on('connection', (socket) => {
             //Was the client part of a room?
             if (socket.room != 'default') {
                 //Did the owner just leave?
-                if (rooms[socket.room / MINROOM].ownerId == socket.id) {
+                if (socket.isOwner) {
                     io.in(socket.room).emit('leave_room')   //broadcast to all users to go back to home screen
                     rooms[socket.room / MINROOM] = null;      //nullify the room so it can be used latter
-                    console.log("Room " + socket.room + " has be removed")
+                    console.log("Room " + socket.room + " has been removed")
 
 
                 }
                 else {
                     //Not room owner, just a regular user
-                    rooms[socket.room / MINROOM].removeMember(socket.id);
-                    io.in(socket.room).emit('update_page', { 'html': rooms[socket.room / MINROOM].toString() });
+                    //Is their room null? (Already Deleted)
+                    if(!rooms[socket.room / MINROOM] == null){
+                        rooms[socket.room / MINROOM].removeMember(socket.id);   //Room is still active, remove the user
+                        io.in(socket.room).emit('update_page', { 'html': rooms[socket.room / MINROOM].toString() });//Update others in room that they have left
+                    }
+                        
                 }
             }
         }
