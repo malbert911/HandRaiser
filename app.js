@@ -17,7 +17,6 @@ class EmotePoll {
         this.mehCount = 0;
         this.frownCount = 0;
         this.responsesCount = 0;
-        this.ongoing = true;
     }
     addSmile() {
         if (this.responsesCount < this.memberCount) {
@@ -47,7 +46,6 @@ class QuestionPoll {
         this.noCount = 0;
         this.maybeCount = 0;
         this.responsesCount = 0;
-        this.ongoing = true;
     }
     addYes() {
         if (this.responsesCount < this.memberCount) {
@@ -76,7 +74,6 @@ class MultipleChoicePoll {
         this.cCount = 0;
         this.dCount = 0;
         this.responsesCount = 0;
-        this.ongoing = true;
     }
     addA() {
         if (this.responsesCount < this.memberCount) {
@@ -112,6 +109,7 @@ class Room {
         this.ownerName = ownerName;
         this.ownerId = ownerId;
         this.members = [];
+        this.ongoingPoll = false;
         this.emote_poll;
         this.question_poll;
         this.multiplechoice_poll;
@@ -302,16 +300,19 @@ io.on('connection', (socket) => {
                     case 'emote_poll':
                         //setup new emote poll
                         rooms[socket.room / MINROOM].emote_poll = new EmotePoll(rooms[socket.room / MINROOM].members.length);
+                        rooms[socket.room / MINROOM].ongoingPoll = true;
                         //send to all except sender
                         socket.to(socket.room).emit('ask_poll', "emote_poll");
                         break;
                     case 'question_poll':
                         rooms[socket.room / MINROOM].question_poll = new QuestionPoll(rooms[socket.room / MINROOM].members.length);
+                        rooms[socket.room / MINROOM].ongoingPoll = true;
                         //send to all except sender(room owner)
                         socket.to(socket.room).emit('ask_poll', "question_poll");
                         break;
                     case 'multiplechoice_poll':
                         rooms[socket.room / MINROOM].multiplechoice_poll = new MultipleChoicePoll(rooms[socket.room / MINROOM].members.length);
+                        rooms[socket.room / MINROOM].ongoingPoll = true;
                         //send to all except sender(room owner)
                         socket.to(socket.room).emit('ask_poll', "multiplechoice_poll");
                         break;
@@ -330,57 +331,69 @@ io.on('connection', (socket) => {
 
     socket.on('poll_response', (data) => {
         try {
-            switch (data.poll_type) {
-                case 'emote_poll':
-                    if (rooms[socket.room / MINROOM].emote_poll.ongoing)
-                        switch (data.response) {
-                            case 'smile':
-                                rooms[socket.room / MINROOM].emote_poll.addSmile();
-                                break;
-                            case 'meh':
-                                rooms[socket.room / MINROOM].emote_poll.addMeh();
-                                break;
-                            case 'frown':
-                                rooms[socket.room / MINROOM].emote_poll.addFrown();
-                                break;
-                            default: return;
-                        }
-                    break;
-                case 'question_poll':
-                    if (rooms[socket.room / MINROOM].question_poll.ongoing)
-                        switch (data.response) {
-                            case 'yes':
-                                rooms[socket.room / MINROOM].question_poll.addYes();
-                                break;
-                            case 'no':
-                                rooms[socket.room / MINROOM].question_poll.addNo();
-                                break;
-                            case 'maybe':
-                                rooms[socket.room / MINROOM].question_poll.addMaybe();
-                                break;
-                            default: return;
-                        }
-                    break;
-                case 'multiplechoice_poll':
-                    if (rooms[socket.room / MINROOM].multiplechoice_poll.ongoing)
-                        switch (data.response) {
-                            case 'a':
-                                rooms[socket.room / MINROOM].multiplechoice_poll.addA();
-                                break;
-                            case 'b':
-                                rooms[socket.room / MINROOM].multiplechoice_poll.addB();
-                                break;
-                            case 'c':
-                                rooms[socket.room / MINROOM].multiplechoice_poll.addC();
-                                break;
-                            case 'd':
-                                rooms[socket.room / MINROOM].multiplechoice_poll.addD();
-                                break;
-                            default: return;
-                        }
-                    break;
-                default: return;
+            if (rooms[socket.room / MINROOM].ongoingPoll){
+                switch (data.poll_type) {
+                    case 'emote_poll':
+                        
+                            switch (data.response) {
+                                case 'smile':
+                                    rooms[socket.room / MINROOM].emote_poll.addSmile();
+                                    break;
+                                case 'meh':
+                                    rooms[socket.room / MINROOM].emote_poll.addMeh();
+                                    break;
+                                case 'frown':
+                                    rooms[socket.room / MINROOM].emote_poll.addFrown();
+                                    break;
+                                default:
+                                    socket.emit('client_error', "Invalid response of this type of poll"); 
+                                    break;
+                            }
+                        break;
+                    case 'question_poll':
+                            switch (data.response) {
+                                case 'yes':
+                                    rooms[socket.room / MINROOM].question_poll.addYes();
+                                    break;
+                                case 'no':
+                                    rooms[socket.room / MINROOM].question_poll.addNo();
+                                    break;
+                                case 'maybe':
+                                    rooms[socket.room / MINROOM].question_poll.addMaybe();
+                                    break;
+                                default:
+                                    socket.emit('client_error', "Invalid response of this type of poll"); 
+                                    break;
+                            }
+                        break;
+                    case 'multiplechoice_poll':
+                            switch (data.response) {
+                                case 'a':
+                                    rooms[socket.room / MINROOM].multiplechoice_poll.addA();
+                                    break;
+                                case 'b':
+                                    rooms[socket.room / MINROOM].multiplechoice_poll.addB();
+                                    break;
+                                case 'c':
+                                    rooms[socket.room / MINROOM].multiplechoice_poll.addC();
+                                    break;
+                                case 'd':
+                                    rooms[socket.room / MINROOM].multiplechoice_poll.addD();
+                                    break;
+                                default:
+                                    socket.emit('client_error', "Invalid response of this type of poll"); 
+                                    break;
+                            }
+                        break;
+                    default:
+                        socket.emit('client_error', "Invalid poll type"); 
+                        break;
+                }
             }
+            else{
+                socket.emit('client_error', "Poll has already ended"); 
+            }
+
         }
         catch (error) {
             console.error(error);
@@ -389,33 +402,38 @@ io.on('connection', (socket) => {
     })
     socket.on('get_poll_results', (data) => {
         try {
-            switch (data.poll_type) {
-                case 'emote_poll':
-                    if (rooms[socket.room / MINROOM].emote_poll.ongoing) {
-                        rooms[socket.room / MINROOM].emote_poll.ongoing = false;
-                        console.log("Sending emote poll results for room " + socket.room);
-                        io.in(socket.room).emit('poll_results', { 'poll_type': 'emote_poll', 'member_count': rooms[socket.room / MINROOM].emote_poll.memberCount, 'response_count': rooms[socket.room / MINROOM].emote_poll.responsesCount, 'smile_count': rooms[socket.room / MINROOM].emote_poll.smileCount, 'meh_count': rooms[socket.room / MINROOM].emote_poll.mehCount, 'frown_count': rooms[socket.room / MINROOM].emote_poll.frownCount });
-                        rooms[socket.room / MINROOM].emote_poll = null;
-                    }
-                    break;
-                case 'question_poll':
-                    if (rooms[socket.room / MINROOM].question_poll.ongoing) {
-                        rooms[socket.room / MINROOM].question_poll.ongoing = false;
-                        console.log("Sending question poll results for room " + socket.room);
-                        io.in(socket.room).emit('poll_results', { 'poll_type': 'question_poll', 'member_count': rooms[socket.room / MINROOM].question_poll.memberCount, 'response_count': rooms[socket.room / MINROOM].question_poll.responsesCount, 'yes_count': rooms[socket.room / MINROOM].question_poll.yesCount, 'maybe_count': rooms[socket.room / MINROOM].question_poll.maybeCount, 'no_count': rooms[socket.room / MINROOM].question_poll.noCount });
-                        rooms[socket.room / MINROOM].question_poll = null;
-                    }
-                    break;
-                case 'multiplechoice_poll':
-                    if (rooms[socket.room / MINROOM].multiplechoice_poll.ongoing) {
-                        rooms[socket.room / MINROOM].multiplechoice_poll.ongoing = false;
-                        console.log("Sending multiplechoice poll results for room " + socket.room);
-                        io.in(socket.room).emit('poll_results', { 'poll_type': 'multiplechoice_poll', 'member_count': rooms[socket.room / MINROOM].multiplechoice_poll.memberCount, 'response_count': rooms[socket.room / MINROOM].multiplechoice_poll.responsesCount, 'a_count': rooms[socket.room / MINROOM].multiplechoice_poll.aCount, 'b_count': rooms[socket.room / MINROOM].multiplechoice_poll.bCount, 'c_count': rooms[socket.room / MINROOM].multiplechoice_poll.cCount, 'd_count': rooms[socket.room / MINROOM].multiplechoice_poll.dCount });
-                        rooms[socket.room / MINROOM].question_poll = null;
-                    }
-                    break;
-                default: return;
+            //make sure request came from room owner
+            if (rooms[socket.room / MINROOM].ownerId == socket.id){
+                switch (data.poll_type) {
+                    case 'emote_poll':
+                        if (rooms[socket.room / MINROOM].ongoingPoll) {
+                            console.log("Sending emote poll results for room " + socket.room);
+                            io.in(socket.room).emit('poll_results', { 'poll_type': 'emote_poll', 'member_count': rooms[socket.room / MINROOM].emote_poll.memberCount, 'response_count': rooms[socket.room / MINROOM].emote_poll.responsesCount, 'smile_count': rooms[socket.room / MINROOM].emote_poll.smileCount, 'meh_count': rooms[socket.room / MINROOM].emote_poll.mehCount, 'frown_count': rooms[socket.room / MINROOM].emote_poll.frownCount });
+                            rooms[socket.room / MINROOM].emote_poll = null;
+                            rooms[socket.room / MINROOM].ongoingPoll = false;
+                        }
+                        break;
+                    case 'question_poll':
+                        if (rooms[socket.room / MINROOM].ongoingPoll) {
+                            rooms[socket.room / MINROOM].question_poll.ongoing = false;
+                            console.log("Sending question poll results for room " + socket.room);
+                            io.in(socket.room).emit('poll_results', { 'poll_type': 'question_poll', 'member_count': rooms[socket.room / MINROOM].question_poll.memberCount, 'response_count': rooms[socket.room / MINROOM].question_poll.responsesCount, 'yes_count': rooms[socket.room / MINROOM].question_poll.yesCount, 'maybe_count': rooms[socket.room / MINROOM].question_poll.maybeCount, 'no_count': rooms[socket.room / MINROOM].question_poll.noCount });
+                            rooms[socket.room / MINROOM].question_poll = null;
+                            rooms[socket.room / MINROOM].ongoingPoll = false;
+                        }
+                        break;
+                    case 'multiplechoice_poll':
+                        if (rooms[socket.room / MINROOM].ongoingPoll) {
+                            console.log("Sending multiplechoice poll results for room " + socket.room);
+                            io.in(socket.room).emit('poll_results', { 'poll_type': 'multiplechoice_poll', 'member_count': rooms[socket.room / MINROOM].multiplechoice_poll.memberCount, 'response_count': rooms[socket.room / MINROOM].multiplechoice_poll.responsesCount, 'a_count': rooms[socket.room / MINROOM].multiplechoice_poll.aCount, 'b_count': rooms[socket.room / MINROOM].multiplechoice_poll.bCount, 'c_count': rooms[socket.room / MINROOM].multiplechoice_poll.cCount, 'd_count': rooms[socket.room / MINROOM].multiplechoice_poll.dCount });
+                            rooms[socket.room / MINROOM].question_poll = null;
+                            rooms[socket.room / MINROOM].ongoingPoll = false;
+                        }
+                        break;
+                    default: return;
+                }
             }
+            
         }
         catch (error) {
             console.error(error);
