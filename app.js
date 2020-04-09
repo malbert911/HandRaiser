@@ -472,7 +472,7 @@ io.on('connection', (socket) => {
             if (socket.room != 'default') {
                 //Did the owner just leave?
                 if (socket.isOwner) {
-                    io.in(socket.room).emit('leave_room')       //broadcast to all users to go back to home screen
+                    io.in(socket.room).emit('leave_room', "Session has ended. The room owner has left the room.")       //broadcast to all users to go back to home screen
                     rooms[socket.room / MINROOM] = null;        //nullify the room so it can be used latter
                     console.log("Room " + socket.room + " has been removed")
 

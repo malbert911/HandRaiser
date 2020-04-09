@@ -101,7 +101,7 @@ $(function () {
 	//=============================================
 
 	socket.on('leave_room', (data) => {
-		alert("Session has ended. The room owner has left the room.")
+		alert(data)
 		window.location.reload(true);
 		//owner left room, room is no longer valid, send them back to the homepage
 	})
