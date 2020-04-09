@@ -412,30 +412,24 @@ io.on('connection', (socket) => {
     socket.on('get_poll_results', (data) => {
         try {
             //make sure request came from room owner
-            if (rooms[socket.room / MINROOM].ownerId == socket.id) {
+            if (rooms[socket.room / MINROOM].ownerId == socket.id && rooms[socket.room / MINROOM].ongoingPoll) {
                 rooms[socket.room / MINROOM].pollParticipants = [];     //Clear the participant list
                 rooms[socket.room / MINROOM].ongoingPoll = false;
                 switch (data.poll_type) {
                     case 'emote_poll':
-                        if (rooms[socket.room / MINROOM].ongoingPoll) {
                             console.log("Sending emote poll results for room " + socket.room);
                             io.in(socket.room).emit('poll_results', { 'poll_type': 'emote_poll', 'member_count': rooms[socket.room / MINROOM].emote_poll.memberCount, 'response_count': rooms[socket.room / MINROOM].emote_poll.responsesCount, 'smile_count': rooms[socket.room / MINROOM].emote_poll.smileCount, 'meh_count': rooms[socket.room / MINROOM].emote_poll.mehCount, 'frown_count': rooms[socket.room / MINROOM].emote_poll.frownCount });
                             rooms[socket.room / MINROOM].emote_poll = null;
-                        }
                         break;
                     case 'question_poll':
-                        if (rooms[socket.room / MINROOM].ongoingPoll) {
                             console.log("Sending question poll results for room " + socket.room);
                             io.in(socket.room).emit('poll_results', { 'poll_type': 'question_poll', 'member_count': rooms[socket.room / MINROOM].question_poll.memberCount, 'response_count': rooms[socket.room / MINROOM].question_poll.responsesCount, 'yes_count': rooms[socket.room / MINROOM].question_poll.yesCount, 'maybe_count': rooms[socket.room / MINROOM].question_poll.maybeCount, 'no_count': rooms[socket.room / MINROOM].question_poll.noCount });
                             rooms[socket.room / MINROOM].question_poll = null;
-                        }
                         break;
                     case 'multiplechoice_poll':
-                        if (rooms[socket.room / MINROOM].ongoingPoll) {
                             console.log("Sending multiplechoice poll results for room " + socket.room);
                             io.in(socket.room).emit('poll_results', { 'poll_type': 'multiplechoice_poll', 'member_count': rooms[socket.room / MINROOM].multiplechoice_poll.memberCount, 'response_count': rooms[socket.room / MINROOM].multiplechoice_poll.responsesCount, 'a_count': rooms[socket.room / MINROOM].multiplechoice_poll.aCount, 'b_count': rooms[socket.room / MINROOM].multiplechoice_poll.bCount, 'c_count': rooms[socket.room / MINROOM].multiplechoice_poll.cCount, 'd_count': rooms[socket.room / MINROOM].multiplechoice_poll.dCount });
                             rooms[socket.room / MINROOM].question_poll = null;
-                        }
                         break;
                     default:
                         socket.emit('client_error', "Invalid poll type provided");
