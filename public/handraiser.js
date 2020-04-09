@@ -78,7 +78,6 @@ $(function () {
 	//=============================================
 
 	socket.on('connect', function () {
-		console.log("i am connecting");
 		socket.emit('client_connection', alreadyConnected);
 	})
 

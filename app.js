@@ -187,8 +187,8 @@ server = app.listen(3000)
 
 //socket.io instantiation
 const io = require("socket.io")(server)
-//io.set('heartbeat timeout', 60000); 
-//io.set('heartbeat interval', 60000);
+io.set('heartbeat timeout', 60000); 
+io.set('heartbeat interval', 60000);
 
 //========================================================================
 //                          MAIN CONNECTION
