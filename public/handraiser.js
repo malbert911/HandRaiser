@@ -1,10 +1,9 @@
 M.AutoInit();
-let alreadyConnected = false;
 $(function () {
 
 	const MAXNAMELENGTH = 15;
 	//make connection
-	let socket = io.connect('http://localhost:3000');
+	let socket = io.connect('http://localhost:3000')
 
 	//buttons and inputs
 	let username = $("#input_username")
@@ -53,33 +52,26 @@ $(function () {
 		// We select the div that we want to turn into a progressbar
 		var progressbar = document.getElementById(id);
 		progressbar.className = 'progressbar';
-
+	  
 		// We create the div that changes width to show progress
 		var progressbarinner = document.createElement('div');
 		progressbarinner.className = 'inner';
-
+	  
 		// Now we set the animation parameters
 		progressbarinner.style.animationDuration = duration;
-
+	  
 		// Eventually couple a callback
-		if (typeof (callback) === 'function') {
-			progressbarinner.addEventListener('animationend', callback);
+		if (typeof(callback) === 'function') {
+		  progressbarinner.addEventListener('animationend', callback);
 		}
-
+	  
 		// Append the progressbar to the main progressbardiv
 		progressbar.appendChild(progressbarinner);
-
+	  
 		// When everything is set up we start the animation
 		progressbarinner.style.animationPlayState = 'running';
-	}
-
-	//=============================================
-	//			CONNECTION
-	//=============================================
-
-	socket.on('connect', function () {
-		socket.emit('client_connection', alreadyConnected);
-	})
+	  }
+	  
 
 	//=============================================
 	//			JOIN A ROOM
@@ -100,7 +92,6 @@ $(function () {
 		$("#CreateJoin").hide();
 		$("#RoomView").show();
 		$("#MemberFooter").show();
-		alreadyConnected = true;
 
 		M.toast({ html: `Joined room ${data.room}` })
 	})
@@ -110,7 +101,7 @@ $(function () {
 	//=============================================
 
 	socket.on('leave_room', (data) => {
-		alert(data)
+		alert("Session has ended. The room owner has left the room.")
 		window.location.reload(true);
 		//owner left room, room is no longer valid, send them back to the homepage
 	})
@@ -120,7 +111,7 @@ $(function () {
 	//			CREATE A ROOM
 	//=============================================
 	create_room.click(function () {
-		if (username.val() && username.val().length <= MAXNAMELENGTH) {
+		if (username.val() && username.val().length <= MAXNAMELENGTH){
 			socket.emit('create_room', { 'username': username.val() });
 			Notification.requestPermission();
 		}
@@ -136,9 +127,8 @@ $(function () {
 		$("#RoomView").show();
 		$("#OwnerFooter").show();
 		$("#sound_toggle").show();
-		alreadyConnected = true;
 		M.toast({ html: `Created room ${data.room}` })
-
+		
 		//prompt to share room id?
 	})
 
@@ -156,35 +146,35 @@ $(function () {
 	//------------OWNER----------------------------
 
 	socket.on('member_hand_raised', (data) => {
-		M.toast({ html: `${data} raised their hand` })
-		if (soundOn) {
+		M.toast({html: `${data} raised their hand`})
+		if(soundOn){
 			//play ding
 			handRaisedSound.play();
 
 			//Visual notification
-			//if a new notification appeared close the other one
-			if (lastNotif != null) {
-				lastNotif.then(function (notification) {
-					notification.close();
-				});
-			}
-			//show notification
-			currentNotif = Push.create(data + " raised their hand", {
-				body: "New Hand Raised",
-				icon: 'handEmoji.png',
-				silent: true
+		//if a new notification appeared close the other one
+		if(lastNotif != null){
+			lastNotif.then(function(notification) {
+				notification.close();
 			});
-			lastNotif = currentNotif;
 		}
-
+		//show notification
+		currentNotif = Push.create(data+ " raised their hand", {
+			body: "New Hand Raised",
+			icon: 'handEmoji.png',
+			silent: true
+		});
+		lastNotif = currentNotif;
+		}
+			
 	})
 
-	$("#sound_toggle_button").click(function () {
-		if (soundOn) {
+	$("#sound_toggle_button").click(function (){
+		if(soundOn){
 			soundOn = false;				//Sound is on, disable it and change the icon
 			$("#sound_toggle_icon").html("volume_off");
 		}
-		else {
+		else{
 			soundOn = true;				//Sound is off, enable it and change the icon
 			$("#sound_toggle_icon").html("volume_up");
 		}
@@ -258,14 +248,14 @@ $(function () {
 				new Chartist.Bar('.ct-chart', {
 					labels: ['😄', '🙂', '😕'],
 					series: [data.smile_count, data.meh_count, data.frown_count]
-				},
-					{
-						distributeSeries: true,
-						axisY: {
-							onlyInteger: true,
-							offset: 20
-						}
-					});
+				}, 
+				{ 
+					distributeSeries: true, 
+					axisY: {
+						onlyInteger: true,
+						offset: 20
+					  } 
+				});
 
 				$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
 				break;
@@ -277,14 +267,14 @@ $(function () {
 				new Chartist.Bar('.ct-chart', {
 					labels: ['Yes', 'Maybe/Not Sure', 'No'],
 					series: [data.yes_count, data.maybe_count, data.no_count]
-				},
-					{
-						distributeSeries: true,
-						axisY: {
-							onlyInteger: true,
-							offset: 20
-						}
-					});
+				}, 
+				{ 
+					distributeSeries: true, 
+					axisY: {
+						onlyInteger: true,
+						offset: 20
+					  } 
+				});
 				$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
 
 				break;
@@ -296,15 +286,15 @@ $(function () {
 				new Chartist.Bar('.ct-chart', {
 					labels: ['A', 'B', 'C', 'D'],
 					series: [data.a_count, data.b_count, data.c_count, data.d_count]
-				},
-					{
-						distributeSeries: true,
-						axisY: {
-							onlyInteger: true,
-							offset: 20
-						}
-					});
-
+				}, 
+				{ 
+					distributeSeries: true, 
+					axisY: {
+						onlyInteger: true,
+						offset: 20
+					  } 
+				});
+				
 				$("#poll_participation").html(`<p>Participation: ${data.response_count} / ${data.member_count}`)
 
 				break;
