@@ -169,6 +169,20 @@ $(function () {
 			
 	})
 
+	//button that copies the room ID
+	$("#id_clip_button").click(function (){
+		M.toast({ html: `Room ID copied to clipboard` });
+
+		//creates a temp input so the execCommand can copy to the clipboard
+		var tempInput = document.createElement("input");
+    	tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+    	tempInput.value = document.getElementById("room_id").innerText.replace("Room ID:", "");
+   	 	document.body.appendChild(tempInput);
+    	tempInput.select();
+    	document.execCommand("copy");
+    	document.body.removeChild(tempInput);
+	})
+
 	$("#sound_toggle_button").click(function (){
 		if(soundOn){
 			soundOn = false;				//Sound is on, disable it and change the icon
