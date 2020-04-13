@@ -39,6 +39,7 @@ $(function () {
 	let myRoom;
 	let myUsername;
 	let soundOn = true;
+	let handraisedText = false;
 
 	//https://notificationsounds.com/notification-sounds/when-604
 	//https://creativecommons.org/licenses/by/4.0/legalcode
@@ -137,10 +138,17 @@ $(function () {
 	//=============================================
 
 	//-------------MEMBER--------------------------
-
+	
 	raise_hand.click(function () {
 		handRaised = !handRaised;
 		socket.emit('hand_changed', { 'handState': handRaised })
+		if(handRaised){
+			document.getElementById("raise_hand").innerText = "Unraise Hand";
+		}
+		else{	
+			document.getElementById("raise_hand").innerText = "Raise Hand";
+		}
+		handraisedText = false;
 	})
 
 	//------------OWNER----------------------------
@@ -176,7 +184,7 @@ $(function () {
 		//creates a temp input so the execCommand can copy to the clipboard
 		var tempInput = document.createElement("input");
     	tempInput.style = "position: absolute; left: -1000px; top: -1000px";
-    	tempInput.value = document.getElementById("room_id").innerText.replace("Room ID:", "");
+    	tempInput.value = document.getElementById("room_id").innerText.replace("Room ID: ", "");
    	 	document.body.appendChild(tempInput);
     	tempInput.select();
     	document.execCommand("copy");
