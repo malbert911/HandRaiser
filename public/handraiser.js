@@ -143,7 +143,7 @@ $(function () {
 		handRaised = !handRaised;
 		socket.emit('hand_changed', { 'handState': handRaised })
 		if(handRaised){
-			document.getElementById("raise_hand").innerText = "Unraise Hand";
+			document.getElementById("raise_hand").innerText = "Lower Hand";
 		}
 		else{	
 			document.getElementById("raise_hand").innerText = "Raise Hand";
