@@ -1,9 +1,23 @@
+const HOSTNAME = "http://localhost:3000"
+
 M.AutoInit();
+if(window.location.search.substr(1)){
+	//Client came from a sharable link
+	get_room = window.location.search.substr(1);
+	if((isFinite(get_room))){	//Make sure it was a room number
+		console.log(get_room);
+		document.getElementById("input_room_id").value = get_room;			//Prefill the room ID
+		$("#Create").hide();
+		document.getElementById("JoinContainer").className = "col s12 l12"; //Hide the create button
+	}
+
+	
+}
 $(function () {
 
 	const MAXNAMELENGTH = 15;
 	//make connection
-	let socket = io.connect('http://localhost:3000')
+	let socket = io.connect(HOSTNAME);
 
 	//buttons and inputs
 	let username = $("#input_username")
@@ -184,7 +198,7 @@ $(function () {
 		//creates a temp input so the execCommand can copy to the clipboard
 		var tempInput = document.createElement("input");
     	tempInput.style = "position: absolute; left: -1000px; top: -1000px";
-    	tempInput.value = document.getElementById("room_id").innerText.replace("Room ID: ", "");
+		tempInput.value = `${HOSTNAME}?${document.getElementById("room_id").innerText.replace("Room ID: ", "")}`; 
    	 	document.body.appendChild(tempInput);
     	tempInput.select();
     	document.execCommand("copy");

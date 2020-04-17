@@ -89,9 +89,9 @@ h3{
     
 }
 #CreateJoin{
-height: 80%;
+/*height: 80%;*/
 display: flex;
-justify-content: center;
+/*justify-content: center;*/
 
 align-items: center;
 flex-direction: column;
@@ -99,7 +99,7 @@ color: honeydew;
 
 }
 #Name{
-    height: 100%;
+    /*height: 100%;*/
     display: flex;
     flex-direction: column;
     
