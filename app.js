@@ -109,6 +109,7 @@ class Room {
         this.ownerName = ownerName;
         this.ownerId = ownerId;
         this.members = [];
+        this.raisedHands = [];  //Queue with members that have thier hands raised.
         this.ongoingPoll = false;
         this.pollParticipants = [];
         this.emote_poll;
@@ -118,9 +119,27 @@ class Room {
 
     setMemberHand(memberId, handState) {
         for (let i = 0; i < this.members.length; i++) {
-            if (this.members[i].id == memberId) {
-                this.members[i].handRaised = handState;
+            if (this.members[i].id != memberId) {
+                continue;   //Not on right person yet
+            }
+            if(handState){
+                //Hand is now raised
+                this.members[i].handRaised = true;
+                this.raisedHands.push(this.members[i]);
                 return true;
+                
+            }
+            else{
+                //Hand is lowered
+                this.members[i].handRaised = false;
+                for (let i = 0; i < this.raisedHands.length; i++) {
+                    if (this.raisedHands[i].id == memberId) {
+                        this.raisedHands.splice(i, 1);
+                        return true;
+                    }
+                }
+                return false;
+
             }
         }
         return false;
@@ -140,9 +159,8 @@ class Room {
         let tmp = `<div class="Owner">${this.ownerName}</div>`;
         tmp += `<div class="StudentDesks">`;
         //Get the raised hand first so they appear on the top of the UI
-        for (let i = 0; i < this.members.length; i++) {
-            if (this.members[i].handRaised)
-                tmp += `<div class="RaisedDesk">✋ ${this.members[i].username}</div>`;
+        for (let i = 0; i < this.raisedHands.length; i++) {
+            tmp += `<div class="RaisedDesk">✋ ${this.raisedHands[i].username}</div>`;
         }
         for (let i = 0; i < this.members.length; i++) {
             if (!this.members[i].handRaised)
