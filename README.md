@@ -15,6 +15,11 @@ https://www.youtube.com/watch?v=FCBdoWGiYuw
 4. Start the server with `node app.js`
 5. Access the app. http://[host]:3000
 
+# Docker
+This project can be found on Docker Hub at https://hub.docker.com/r/malbert911/handraiser
+
+Sample Docker run for this project: `docker run -p 3000:3000 --name handraiser -d malbert911/handraiser`
+
 # #BuildforCOVID19
 This project was submitted in the COVID 19 Global Hackathon https://devpost.com/software/hand-raiser
 
