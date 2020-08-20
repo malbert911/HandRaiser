@@ -11,10 +11,9 @@ https://www.youtube.com/watch?v=FCBdoWGiYuw
 
 # Install
 1. Clone this repository
-2. Change `HOSTNAME` in first line of `handraiser.js` to reflect your setup
 3. Get dependecies with `npm install -d`
 4. Start the server with `node app.js`
-5. Access the app from http://localhost:3000 (by default)
+5. Access the app. http://[host]:3000
 
 # #BuildforCOVID19
 This project was submitted in the COVID 19 Global Hackathon https://devpost.com/software/hand-raiser

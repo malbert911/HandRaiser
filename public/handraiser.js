@@ -1,4 +1,4 @@
-const HOSTNAME = "http://localhost:3000"
+const HOSTNAME = window.location.origin;
 
 M.AutoInit();
 if(window.location.search.substr(1)){
